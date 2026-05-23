@@ -1,0 +1,204 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const features = [
+  {
+    title: 'Voice over Meshtastic',
+    body: 'Compressed voice chunks sized against the transport’s max TX payload, with retransmit on the hot path. Drops into your existing mesh.',
+  },
+  {
+    title: 'Plugs into your radio',
+    body: 'Speaks the Meshtastic protocol over Serial or BLE — no firmware fork, no separate network, no parallel mesh to maintain.',
+  },
+  {
+    title: 'Open source',
+    body: 'GPL-3.0-or-later. Rust workspace, egui desktop client, Android bridge, shared design tokens.',
+  },
+  {
+    title: 'Self-hosted friendly',
+    body: 'No cloud accounts, no telemetry. Run it on your own hardware, your own way.',
+  },
+];
+
+const hardware = [
+  {
+    name: 'LilyGo T-Deck',
+    chip: 'ESP32-S3',
+    status: 'Primary target — browser-flashable',
+    flashable: true,
+  },
+  {
+    name: 'Android',
+    chip: 'Android 9+',
+    status: 'In development — Rust core via JNI',
+    flashable: false,
+  },
+  {
+    name: 'Desktop (egui)',
+    chip: 'Linux / macOS / Windows',
+    status: 'In development',
+    flashable: false,
+  },
+];
+---
+
+<Layout>
+  <section class="hero">
+    <div class="container">
+      <h1>Voice. Over Meshtastic.</h1>
+      <p class="lead">
+        Voicetastic is an open-source push-to-talk voice client for the
+        Meshtastic mesh — no cell network, no servers, no subscription.
+      </p>
+      <div class="cta">
+        <a href="/flash" class="button primary">Flash your device</a>
+        <a
+          href="https://git.cha-sam.re/voicetastic/voicetastic-desktop/-/wikis/Home"
+          class="button"
+          target="_blank"
+          rel="noopener"
+        >
+          Read the docs
+        </a>
+        <a href="https://git.cha-sam.re/voicetastic" class="button" target="_blank" rel="noopener">
+          View source
+        </a>
+      </div>
+      <p class="hero-note muted">
+        Browser-based flashing works on Chrome, Edge, and Opera over HTTPS.
+      </p>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <div class="container">
+      <h2>What it does</h2>
+      <div class="feature-grid">
+        {features.map((f) => (
+          <article class="feature-card">
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="hardware" class="hardware">
+    <div class="container">
+      <h2>Supported hardware</h2>
+      <div class="hardware-grid">
+        {hardware.map((h) => (
+          <article class="hw-card">
+            <header>
+              <h3>{h.name}</h3>
+              <span class="chip">{h.chip}</span>
+            </header>
+            <p class="muted">{h.status}</p>
+            {h.flashable && (
+              <a href="/flash" class="button primary">Flash now</a>
+            )}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    padding: 6rem 1.25rem 4rem;
+    text-align: center;
+    background: radial-gradient(
+        ellipse at top,
+        var(--accent-glow),
+        transparent 60%
+      ),
+      var(--bg);
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+  .lead {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    max-width: 38rem;
+    margin: 0 auto 2rem;
+  }
+  .cta {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .hero-note {
+    font-size: 0.85rem;
+  }
+
+  .features h2,
+  .hardware h2 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .feature-card h3 {
+    color: var(--accent);
+    font-size: 1.1rem;
+  }
+  .feature-card p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .hardware-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .hw-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .hw-card header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .hw-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  .chip {
+    font-size: 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    color: var(--text-muted);
+  }
+  .hw-card .button {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+</style>

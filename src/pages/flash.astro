@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Flash your device — Voicetastic"
+  description="Install Voicetastic firmware on your T-Deck directly from the browser."
+>
+  <section class="flash-hero">
+    <div class="container">
+      <h1>Flash your device</h1>
+      <p class="lead">
+        Plug your T-Deck in via USB, pick the latest firmware, and click
+        <em>Connect</em>. No drivers, no command line.
+      </p>
+
+      <div class="device-card">
+        <header>
+          <h2>LilyGo T-Deck</h2>
+          <span class="chip">ESP32-S3</span>
+        </header>
+
+        <p class="muted">
+          Stable firmware is signed and pinned in the manifest below. Use a
+          data-capable USB-C cable.
+        </p>
+
+        <div class="install-wrap">
+          <esp-web-install-button manifest="/firmware/manifest.json">
+            <button slot="activate" class="button primary">Connect &amp; install</button>
+            <span slot="unsupported">
+              Your browser doesn't support Web Serial. Please use
+              <a href="https://www.google.com/chrome/" target="_blank" rel="noopener">Chrome</a>
+              or Edge on desktop.
+            </span>
+            <span slot="not-allowed">
+              Web Serial requires HTTPS. Please reload this page over HTTPS.
+            </span>
+          </esp-web-install-button>
+        </div>
+      </div>
+
+      <details class="help">
+        <summary>Troubleshooting</summary>
+        <ul>
+          <li>
+            <strong>No device shows up?</strong> Hold <code>BOOT</code> while
+            plugging in to force bootloader mode, then click Connect again.
+          </li>
+          <li>
+            <strong>Permission denied on Linux?</strong> Add yourself to the
+            <code>dialout</code> (Debian/Ubuntu) or <code>uucp</code> (Arch) group
+            and log out / back in.
+          </li>
+          <li>
+            <strong>Browser not supported?</strong> Web Serial is Chromium-only
+            for now. Firefox and Safari are not supported.
+          </li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <script
+    type="module"
+    src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"
+  ></script>
+</Layout>
+
+<style>
+  .flash-hero {
+    padding: 5rem 1.25rem 6rem;
+  }
+  .flash-hero h1 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin-bottom: 0.75rem;
+  }
+  .lead {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 38rem;
+    margin: 0 0 2.5rem;
+  }
+
+  .device-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    max-width: 38rem;
+  }
+  .device-card header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .device-card h2 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+  .chip {
+    font-size: 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    color: var(--text-muted);
+  }
+
+  .install-wrap {
+    margin-top: 1.25rem;
+  }
+
+  .help {
+    margin-top: 2.5rem;
+    max-width: 38rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+  }
+  .help summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .help ul {
+    margin: 0.75rem 0 0;
+    padding-left: 1.25rem;
+    color: var(--text-muted);
+  }
+  .help li {
+    margin-bottom: 0.5rem;
+  }
+  .help code {
+    background: var(--bg-elevated);
+    padding: 0.05rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+</style>

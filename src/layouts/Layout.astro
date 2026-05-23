@@ -1,0 +1,242 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Voicetastic — push-to-talk voice over Meshtastic',
+  description = 'Open-source push-to-talk voice for the Meshtastic mesh. Flash your T-Deck from the browser.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav">
+        <a href="/" class="brand">
+          <img src="/favicon.svg" alt="" class="brand-mark" width="28" height="28" />
+          <span>Voicetastic</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/flash">Flash</a></li>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/#hardware">Hardware</a></li>
+          <li>
+            <a
+              href="https://git.cha-sam.re/voicetastic/voicetastic-desktop/-/wikis/Home"
+              target="_blank"
+              rel="noopener"
+            >
+              Docs
+            </a>
+          </li>
+          <li>
+            <a href="https://git.cha-sam.re/voicetastic" target="_blank" rel="noopener">
+              Source
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>
+          <strong>Voicetastic</strong> — open-source voice over Meshtastic.
+          Licensed under GPL-3.0-or-later.
+        </p>
+        <p class="muted">
+          <a href="https://git.cha-sam.re/voicetastic" target="_blank" rel="noopener">
+            git.cha-sam.re/voicetastic
+          </a>
+        </p>
+      </div>
+    </footer>
+
+    <style is:global>
+      /* Colors mirror tokens/design.toml [color.dark_hc], which holds
+         the Android app's `Neutral` + HighContrast Material 3 scheme
+         (seed `#FFBDA8`, SPEC_2025). Keep in sync — when the Android
+         app's Color.kt is regenerated via MaterialKolor Builder,
+         refresh both design.toml and these values. */
+      :root {
+        --bg: #100e0d;                /* BackgroundDarkHighContrast */
+        --bg-elevated: #161312;       /* SurfaceContainerLowDarkHighContrast */
+        --bg-card: #1c1918;           /* SurfaceContainerDarkHighContrast */
+        --bg-card-high: #231f1d;      /* SurfaceContainerHighDarkHighContrast */
+        --border: #231f1d;            /* SurfaceContainerHighDarkHighContrast */
+        --border-strong: #aba29f;     /* OutlineVariantDarkHighContrast */
+        --text: #ffffff;              /* OnSurfaceDarkHighContrast */
+        --text-muted: #aba29f;        /* OutlineVariantDarkHighContrast */
+        --accent: #ffdfd5;            /* PrimaryDarkHighContrast (pale peach) */
+        --accent-strong: #ffffff;     /* hover state */
+        --accent-on: #482113;          /* OnPrimaryDarkHighContrast */
+        --accent-glow: rgba(210, 149, 130, 0.32);  /* PrimaryContainerDarkHighContrast */
+        --tertiary: #ffe1e6;          /* TertiaryDarkHighContrast (pale rose) */
+        --danger: #ffdedb;            /* ErrorDarkHighContrast */
+        --max-width: 1100px;
+        --radius: 12px;               /* shape.medium */
+        --radius-sm: 8px;             /* shape.small */
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+          Arial, 'Noto Sans', sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        color: var(--accent-strong);
+        text-decoration: underline;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.2;
+        margin: 0 0 0.5em 0;
+      }
+
+      .muted {
+        color: var(--text-muted);
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(16, 14, 13, 0.85);
+        backdrop-filter: saturate(150%) blur(8px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0.9rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        color: var(--text);
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+      .brand:hover {
+        text-decoration: none;
+      }
+      .brand-mark {
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 6px;
+        display: block;
+      }
+
+      .nav-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 1.25rem;
+      }
+      .nav-links a {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+      .nav-links a:hover {
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      main {
+        min-height: calc(100vh - 200px);
+      }
+
+      section {
+        padding: 4rem 1.25rem;
+      }
+      section .container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 0.7rem 1.25rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text);
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.05s ease, border-color 0.15s ease;
+      }
+      .button:hover {
+        text-decoration: none;
+        border-color: var(--accent);
+      }
+      .button.primary {
+        background: var(--accent);
+        color: var(--accent-on);
+        border-color: var(--accent);
+      }
+      .button.primary:hover {
+        background: var(--accent-strong);
+        border-color: var(--accent-strong);
+      }
+
+      .site-footer {
+        border-top: 1px solid var(--border);
+        background: var(--bg-elevated);
+        padding: 2rem 1.25rem;
+      }
+      .footer-inner {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+      .footer-inner p {
+        margin: 0;
+      }
+    </style>
+  </body>
+</html>
