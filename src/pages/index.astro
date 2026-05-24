@@ -40,6 +40,8 @@ const hardware = [
     flashable: false,
   },
 ];
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <Layout>
@@ -269,8 +271,8 @@ const hardware = [
         it. No cell network, no servers, no subscription.
       </p>
       <div class="cta">
-        <a href="/flash" class="button primary">Flash your device</a>
-        <a href="/docs" class="button">Read the docs</a>
+        <a href={`${base}/flash`} class="button primary">Flash your device</a>
+        <a href={`${base}/docs`} class="button">Read the docs</a>
         <a href="https://git.cha-sam.re/voicetastic" class="button" target="_blank" rel="noopener">
           View source
         </a>
@@ -307,7 +309,7 @@ const hardware = [
             </header>
             <p class="muted">{h.status}</p>
             {h.flashable && (
-              <a href="/flash" class="button primary">Flash now</a>
+              <a href={`${base}/flash`} class="button primary">Flash now</a>
             )}
           </article>
         ))}

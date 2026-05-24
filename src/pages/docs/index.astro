@@ -1,24 +1,26 @@
 ---
 import DocLayout from '../../layouts/DocLayout.astro';
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 const cards = [
   {
-    href: '/docs/meshtastic',
+    href: `${base}/docs/meshtastic`,
     title: 'Meshtastic primer',
     body: 'The mesh network Voicetastic rides on. Hardware, range, why it matters.',
   },
   {
-    href: '/docs/how-it-works',
+    href: `${base}/docs/how-it-works`,
     title: 'How it works',
     body: 'From microphone to mesh to your friend. Architecture, layers, packet flow.',
   },
   {
-    href: '/docs/voice-messages',
+    href: `${base}/docs/voice-messages`,
     title: 'Voice messages',
     body: 'Codecs, range vs. quality, FEC, what to expect on a lossy mesh.',
   },
   {
-    href: '/docs/glossary',
+    href: `${base}/docs/glossary`,
     title: 'Glossary',
     body: 'Short, plain-English definitions for every term you will run into.',
   },
@@ -160,6 +162,6 @@ const features = [
 
   <div class="doc-foot">
     <span></span>
-    <a class="doc-foot-next" href="/docs/meshtastic">Meshtastic primer</a>
+    <a class="doc-foot-next" href={`${base}/docs/meshtastic`}>Meshtastic primer</a>
   </div>
 </DocLayout>

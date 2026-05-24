@@ -9,12 +9,14 @@ interface Props {
 
 const { title, description, section } = Astro.props;
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 const nav = [
-  { id: 'overview',       href: '/docs',                  label: 'Overview' },
-  { id: 'meshtastic',     href: '/docs/meshtastic',       label: 'Meshtastic primer' },
-  { id: 'how-it-works',   href: '/docs/how-it-works',     label: 'How it works' },
-  { id: 'voice-messages', href: '/docs/voice-messages',   label: 'Voice messages' },
-  { id: 'glossary',       href: '/docs/glossary',         label: 'Glossary' },
+  { id: 'overview',       href: `${base}/docs`,                  label: 'Overview' },
+  { id: 'meshtastic',     href: `${base}/docs/meshtastic`,       label: 'Meshtastic primer' },
+  { id: 'how-it-works',   href: `${base}/docs/how-it-works`,     label: 'How it works' },
+  { id: 'voice-messages', href: `${base}/docs/voice-messages`,   label: 'Voice messages' },
+  { id: 'glossary',       href: `${base}/docs/glossary`,         label: 'Glossary' },
 ];
 ---
 

@@ -1,5 +1,7 @@
 ---
 import DocLayout from '../../layouts/DocLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <DocLayout
@@ -117,7 +119,7 @@ import DocLayout from '../../layouts/DocLayout.astro';
     <div class="doc-card">
       <h3>A LilyGo T-Deck (optional)</h3>
       <p>
-        The reference target for the <a href="/flash">browser flasher</a>: a
+        The reference target for the <a href={`${base}/flash`}>browser flasher</a>: a
         standalone Voicetastic-aware radio with a screen and keyboard.
       </p>
     </div>
@@ -164,7 +166,7 @@ import DocLayout from '../../layouts/DocLayout.astro';
   </div>
 
   <div class="doc-foot">
-    <a class="doc-foot-prev" href="/docs">Overview</a>
-    <a class="doc-foot-next" href="/docs/how-it-works">How it works</a>
+    <a class="doc-foot-prev" href={`${base}/docs`}>Overview</a>
+    <a class="doc-foot-next" href={`${base}/docs/how-it-works`}>How it works</a>
   </div>
 </DocLayout>

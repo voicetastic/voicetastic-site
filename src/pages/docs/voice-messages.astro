@@ -1,5 +1,7 @@
 ---
 import DocLayout from '../../layouts/DocLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <DocLayout
@@ -270,7 +272,7 @@ import DocLayout from '../../layouts/DocLayout.astro';
   </p>
 
   <div class="doc-foot">
-    <a class="doc-foot-prev" href="/docs/how-it-works">How it works</a>
-    <a class="doc-foot-next" href="/docs/glossary">Glossary</a>
+    <a class="doc-foot-prev" href={`${base}/docs/how-it-works`}>How it works</a>
+    <a class="doc-foot-next" href={`${base}/docs/glossary`}>Glossary</a>
   </div>
 </DocLayout>

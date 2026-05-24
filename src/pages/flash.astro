@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <Layout
@@ -26,7 +28,7 @@ import Layout from '../layouts/Layout.astro';
         </p>
 
         <div class="install-wrap">
-          <esp-web-install-button manifest="/firmware/manifest.json">
+          <esp-web-install-button manifest={`${base}/firmware/manifest.json`}>
             <button slot="activate" class="button primary">Connect &amp; install</button>
             <span slot="unsupported">
               Your browser doesn't support Web Serial. Please use
