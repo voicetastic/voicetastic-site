@@ -1,0 +1,170 @@
+---
+import DocLayout from '../../layouts/DocLayout.astro';
+---
+
+<DocLayout
+  title="Meshtastic primer"
+  description="The Meshtastic mesh network: what it is, what hardware it runs on, and why Voicetastic builds on top of it."
+  section="meshtastic"
+>
+  <p class="pill accent">Documentation</p>
+  <h1>Meshtastic primer</h1>
+  <p class="lead">
+    Voicetastic does not invent a new network. It rides on
+    <a href="https://meshtastic.org/" target="_blank" rel="noopener">Meshtastic</a>,
+    an open-source LoRa mesh. If Meshtastic is new to you, here is the smallest
+    explanation that will get you to a useful mental model.
+  </p>
+
+  <h2>What is Meshtastic?</h2>
+  <p>
+    Meshtastic is a project that turns inexpensive LoRa radios into a
+    self-healing wireless mesh. Each radio (called a <strong>node</strong>) can
+    relay messages for the others, so coverage grows organically as more
+    people join. No tower. No SIM card. No subscription. Range per hop is
+    typically a few hundred metres in town and several kilometres in the open;
+    multi-hop networks easily cover a town or a hiking trail.
+  </p>
+
+  <figure class="doc-figure">
+    <svg viewBox="0 0 720 260" role="img" aria-label="A mesh of LoRa nodes relaying a message">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+
+      <!-- Hop lines -->
+      <g color="var(--accent)">
+        <line class="svg-line-accent" x1="100" y1="130" x2="260" y2="60"  marker-end="url(#arr2)"/>
+        <line class="svg-line-accent" x1="280" y1="80"  x2="430" y2="160" marker-end="url(#arr2)"/>
+        <line class="svg-line-accent" x1="440" y1="180" x2="580" y2="120" marker-end="url(#arr2)"/>
+      </g>
+
+      <!-- Travelling packet -->
+      <circle class="packet" r="4" cx="100" cy="130" style="--packet-distance: 480px"/>
+
+      <!-- Nodes -->
+      <g>
+        <g transform="translate(80, 130)">
+          <circle class="node-pulse" r="8"/>
+          <circle class="wave" r="10"/>
+          <circle class="wave delay-1" r="10"/>
+          <text class="svg-text" x="0" y="34" text-anchor="middle" font-weight="600">You</text>
+        </g>
+        <g transform="translate(270, 60)">
+          <circle class="node-pulse" style="animation-delay: 0.4s" r="7"/>
+          <text class="svg-text-muted" x="0" y="-15" text-anchor="middle">relay</text>
+        </g>
+        <g transform="translate(440, 170)">
+          <circle class="node-pulse" style="animation-delay: 0.8s" r="7"/>
+          <text class="svg-text-muted" x="0" y="-15" text-anchor="middle">relay</text>
+        </g>
+        <g transform="translate(600, 120)">
+          <circle class="node-pulse" style="animation-delay: 1.2s" r="8"/>
+          <circle class="wave delay-2" r="10"/>
+          <text class="svg-text" x="0" y="32" text-anchor="middle" font-weight="600">Friend</text>
+        </g>
+        <!-- isolated extras for visual density -->
+        <g transform="translate(200, 220)">
+          <circle class="node-pulse" style="animation-delay: 1.4s" r="5"/>
+        </g>
+        <g transform="translate(520, 230)">
+          <circle class="node-pulse" style="animation-delay: 1.8s" r="5"/>
+        </g>
+        <g transform="translate(360, 30)">
+          <circle class="node-pulse" style="animation-delay: 0.2s" r="5"/>
+        </g>
+      </g>
+    </svg>
+    <figcaption>A message can take any working path of relays. Nodes rebroadcast for each other automatically.</figcaption>
+  </figure>
+
+  <h2>What it carries by default</h2>
+  <ul>
+    <li><strong>Short text messages</strong>, broadcast or direct.</li>
+    <li><strong>Position</strong> and telemetry, if you opt in.</li>
+    <li><strong>Channels</strong>: a channel is just a shared name + pre-shared key. Anyone with the key is in.</li>
+  </ul>
+  <p>
+    Voicetastic adds <strong>voice messages</strong> on top, using a Meshtastic
+    application port reserved for third-party tenants
+    (<code>PRIVATE_APP</code>, port 256). To Meshtastic, voice frames look like
+    any other payload; they get the same encryption, the same routing, the
+    same airtime budget.
+  </p>
+
+  <h2>What hardware do I need?</h2>
+  <div class="doc-cards">
+    <div class="doc-card">
+      <h3>A Meshtastic radio</h3>
+      <p>
+        Any node running modern Meshtastic firmware. ESP32, nRF52, RP2040, the
+        list is long and growing. See
+        <a href="https://meshtastic.org/docs/hardware/devices/" target="_blank" rel="noopener">supported devices</a>.
+      </p>
+    </div>
+    <div class="doc-card">
+      <h3>A Voicetastic client</h3>
+      <p>
+        The <a href="https://git.cha-sam.re/voicetastic/android" target="_blank" rel="noopener">Android app</a>
+        (BLE) or the
+        <a href="https://git.cha-sam.re/voicetastic/voicetastic-desktop" target="_blank" rel="noopener">Linux desktop client</a>
+        (BLE or USB serial). Both speak the same wire protocol.
+      </p>
+    </div>
+    <div class="doc-card">
+      <h3>A LilyGo T-Deck (optional)</h3>
+      <p>
+        The reference target for the <a href="/flash">browser flasher</a>: a
+        standalone Voicetastic-aware radio with a screen and keyboard.
+      </p>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">i</span>
+    <p class="callout-body">
+      You can use Voicetastic with a standard Meshtastic radio. You do not
+      need a Voicetastic-specific firmware. The custom firmware (in our
+      <a href="https://git.cha-sam.re/voicetastic/firmware" target="_blank" rel="noopener">firmware fork</a>)
+      only matters for nodes that act as <em>standalone</em> Voicetastic
+      devices, like the T-Deck.
+    </p>
+  </div>
+
+  <h2>How it stays private</h2>
+  <p>
+    Meshtastic encrypts every channel with AES-256-CTR using the channel's
+    pre-shared key. Voicetastic delegates confidentiality to that layer
+    rather than rolling its own envelope. Anyone with the channel key can
+    read traffic on it; anyone without cannot. If you want stricter
+    confidentiality, give the channel out only to trusted parties.
+  </p>
+
+  <h2>Where to learn more</h2>
+  <div class="doc-cards">
+    <a class="doc-card" href="https://meshtastic.org/docs/" target="_blank" rel="noopener">
+      <h3>Meshtastic docs</h3>
+      <p>The canonical project documentation: getting started, channels, firmware, modules.</p>
+    </a>
+    <a class="doc-card" href="https://meshtastic.org/docs/hardware/devices/" target="_blank" rel="noopener">
+      <h3>Supported hardware</h3>
+      <p>Every board the Meshtastic firmware runs on, with notes and quirks.</p>
+    </a>
+    <a class="doc-card" href="https://meshtastic.org/docs/development/firmware/build" target="_blank" rel="noopener">
+      <h3>Build the firmware</h3>
+      <p>Compile firmware from source if you want full control over your node.</p>
+    </a>
+    <a class="doc-card" href="https://meshtastic.org/docs/configuration/" target="_blank" rel="noopener">
+      <h3>Configuration reference</h3>
+      <p>Every setting Meshtastic itself exposes: LoRa preset, region, channels, power, position.</p>
+    </a>
+  </div>
+
+  <div class="doc-foot">
+    <a class="doc-foot-prev" href="/docs">Overview</a>
+    <a class="doc-foot-next" href="/docs/how-it-works">How it works</a>
+  </div>
+</DocLayout>

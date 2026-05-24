@@ -45,21 +45,232 @@ const hardware = [
 <Layout>
   <section class="hero">
     <div class="container">
-      <h1>Voice. Over Meshtastic.</h1>
+      <p class="async-badge">
+        <span class="async-dot"></span> Asynchronous · record, send, listen later
+      </p>
+      <h1>Voice messages. Over Meshtastic.</h1>
+
+      <div class="demo-grid">
+        <div class="anim-frame">
+        <svg viewBox="0 0 1100 400" class="protocol-anim" role="img"
+             aria-label="A voice message recorded on a T-Deck Plus, transmitted through three mesh relays, delivered to a T-Deck, then played back after a delay.">
+          <defs>
+            <linearGradient id="path-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="var(--accent)" stop-opacity="0"/>
+              <stop offset="15%"  stop-color="var(--accent)" stop-opacity="0.6"/>
+              <stop offset="85%"  stop-color="var(--accent)" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+            </linearGradient>
+            <filter id="anim-glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3.5" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <g class="phase-display" transform="translate(550, 30)">
+            <text class="phase-label phase-rec"   text-anchor="middle">1 · RECORDING ON SENDER</text>
+            <text class="phase-label phase-trans" text-anchor="middle">2 · TRANSMITTING THROUGH THE MESH</text>
+            <text class="phase-label phase-wait"  text-anchor="middle">3 · DELIVERED · WAITING FOR RECIPIENT</text>
+            <text class="phase-label phase-play"  text-anchor="middle">4 · RECIPIENT TAPPED PLAY</text>
+          </g>
+
+          <g transform="translate(150, 50)">
+            <rect class="phase-track" x="0" y="0" width="800" height="3" rx="1.5"/>
+            <rect class="phase-fill"  x="0" y="0" width="0"   height="3" rx="1.5"/>
+            <circle class="phase-cursor" cx="0" cy="1.5" r="6"/>
+          </g>
+
+          <path class="voice-path-stroke"
+                d="M 190 200 Q 290 110 390 200 T 590 200 T 790 200 L 845 200"
+                fill="none"
+                stroke="url(#path-gradient)" stroke-width="2" stroke-dasharray="5 8"/>
+
+          <g class="device-sender" transform="translate(29, 68) scale(1.15)">
+            <rect class="phone-body" width="140" height="230" rx="22"/>
+            <rect class="phone-screen" x="10" y="22" width="120" height="186" rx="14"/>
+            <rect x="55" y="22" width="30" height="6" rx="3" class="phone-notch"/>
+
+            <g class="screen-rec">
+              <text class="anim-label" x="70" y="48" text-anchor="middle">REC</text>
+              <circle class="rec-dot" cx="48" cy="44" r="3"/>
+
+              <g transform="translate(70, 122)">
+                <rect class="rec-bar rec-bar-1" x="-32" y="-22" width="6" height="44" rx="3"/>
+                <rect class="rec-bar rec-bar-2" x="-22" y="-22" width="6" height="44" rx="3"/>
+                <rect class="rec-bar rec-bar-3" x="-12" y="-22" width="6" height="44" rx="3"/>
+                <rect class="rec-bar rec-bar-4" x="-2"  y="-22" width="6" height="44" rx="3"/>
+                <rect class="rec-bar rec-bar-5" x="8"   y="-22" width="6" height="44" rx="3"/>
+                <rect class="rec-bar rec-bar-6" x="18"  y="-22" width="6" height="44" rx="3"/>
+                <rect class="rec-bar rec-bar-7" x="28"  y="-22" width="6" height="44" rx="3"/>
+              </g>
+
+              <circle class="mic-button" cx="70" cy="178" r="20"/>
+              <path class="mic-icon"
+                    d="M 63 168 L 63 182 Q 63 188 70 188 Q 77 188 77 182 L 77 168 Q 77 162 70 162 Q 63 162 63 168 Z"/>
+              <line class="mic-icon" x1="58" y1="184" x2="82" y2="184" stroke-width="2" stroke-linecap="round"/>
+              <line class="mic-icon" x1="70" y1="186" x2="70" y2="196" stroke-width="2" stroke-linecap="round"/>
+            </g>
+
+            <g class="screen-sent">
+              <text class="anim-label" x="70" y="48" text-anchor="middle">SENT</text>
+              <circle cx="70" cy="118" r="22" class="confirm-circle"/>
+              <path class="confirm-check" d="M 59 118 L 67 126 L 81 110"
+                    fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+
+            <g class="screen-sender-idle">
+              <text class="anim-label" x="70" y="48" text-anchor="middle">IDLE</text>
+              <line x1="20" y1="118" x2="120" y2="118" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="2 4"/>
+            </g>
+
+            <rect x="55" y="216" width="30" height="3" rx="1.5" class="phone-home"/>
+
+            <text class="device-label" x="70" y="248" text-anchor="middle">PHONE</text>
+          </g>
+
+          <g class="antenna-emit sender-emit" transform="translate(190, 200)">
+            <circle class="wave-pulse"          r="4" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <circle class="wave-pulse delay-1"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.7"/>
+            <circle class="wave-pulse delay-2"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+          </g>
+
+          <g class="relay-node relay-1" transform="translate(290, 155)">
+            <circle r="6" class="node-dot" filter="url(#anim-glow)"/>
+            <circle class="wave-pulse small"          r="4" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+            <circle class="wave-pulse small delay-1"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.2"/>
+            <text class="anim-mini" x="0" y="-18" text-anchor="middle">RELAY</text>
+          </g>
+          <g class="relay-node relay-2" transform="translate(490, 245)">
+            <circle r="6" class="node-dot" filter="url(#anim-glow)"/>
+            <circle class="wave-pulse small"          r="4" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+            <circle class="wave-pulse small delay-1"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.2"/>
+            <text class="anim-mini" x="0" y="24" text-anchor="middle">RELAY</text>
+          </g>
+          <g class="relay-node relay-3" transform="translate(690, 155)">
+            <circle r="6" class="node-dot" filter="url(#anim-glow)"/>
+            <circle class="wave-pulse small"          r="4" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+            <circle class="wave-pulse small delay-1"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.2"/>
+            <text class="anim-mini" x="0" y="-18" text-anchor="middle">RELAY</text>
+          </g>
+
+          <g class="chunks">
+            <rect class="chunk chunk-1" width="12" height="12" rx="2.5" filter="url(#anim-glow)"/>
+            <rect class="chunk chunk-2" width="12" height="12" rx="2.5" filter="url(#anim-glow)"/>
+            <rect class="chunk chunk-3" width="12" height="12" rx="2.5" filter="url(#anim-glow)"/>
+            <rect class="chunk chunk-4" width="12" height="12" rx="2.5" filter="url(#anim-glow)"/>
+            <rect class="chunk chunk-5" width="12" height="12" rx="2.5" filter="url(#anim-glow)"/>
+          </g>
+
+          <g class="antenna-emit receiver-emit" transform="translate(845, 200)">
+            <circle class="wave-pulse"          r="4" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <circle class="wave-pulse delay-1"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.7"/>
+            <circle class="wave-pulse delay-2"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+          </g>
+
+          <g class="device-receiver" transform="translate(862, 97) scale(1.15)">
+            <rect class="tdeck-body" width="200" height="180" rx="14"/>
+            <rect class="tdeck-screen" x="14" y="14" width="172" height="80" rx="6"/>
+
+            <g class="screen-receiver-idle">
+              <text class="anim-label" x="100" y="34" text-anchor="middle">IDLE</text>
+              <line x1="40" y1="62" x2="160" y2="62" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="2 4"/>
+            </g>
+
+            <g class="screen-delivered">
+              <g transform="translate(40, 62)">
+                <rect x="-22" y="-12" width="44" height="24" rx="3" class="envelope-body"/>
+                <path d="M -22 -12 L 0 4 L 22 -12" fill="none" stroke-width="1.6" class="envelope-flap"/>
+                <circle cx="22" cy="-16" r="9" class="badge-bubble"/>
+                <text x="22" y="-13" text-anchor="middle" class="badge-num">1</text>
+              </g>
+              <text class="anim-label" x="120" y="50" text-anchor="middle">DELIVERED</text>
+              <text class="anim-mini" x="120" y="74" text-anchor="middle">TAP TO PLAY</text>
+              <g transform="translate(120, 86)">
+                <circle class="wait-dot wait-dot-1" cx="-12" cy="0" r="2"/>
+                <circle class="wait-dot wait-dot-2" cx="0"   cy="0" r="2"/>
+                <circle class="wait-dot wait-dot-3" cx="12"  cy="0" r="2"/>
+              </g>
+            </g>
+
+            <g class="screen-play">
+              <circle cx="42" cy="54" r="14" class="play-button" filter="url(#anim-glow)"/>
+              <path d="M 38 47 L 38 61 L 50 54 Z" class="play-icon"/>
+              <g transform="translate(115, 54)">
+                <rect class="play-bar play-bar-1" x="-38" y="-12" width="5" height="24" rx="2"/>
+                <rect class="play-bar play-bar-2" x="-28" y="-12" width="5" height="24" rx="2"/>
+                <rect class="play-bar play-bar-3" x="-18" y="-12" width="5" height="24" rx="2"/>
+                <rect class="play-bar play-bar-4" x="-8"  y="-12" width="5" height="24" rx="2"/>
+                <rect class="play-bar play-bar-5" x="2"   y="-12" width="5" height="24" rx="2"/>
+                <rect class="play-bar play-bar-6" x="12"  y="-12" width="5" height="24" rx="2"/>
+                <rect class="play-bar play-bar-7" x="22"  y="-12" width="5" height="24" rx="2"/>
+                <rect class="play-bar play-bar-8" x="32"  y="-12" width="5" height="24" rx="2"/>
+              </g>
+            </g>
+
+            <g transform="translate(20, 108)">
+              <rect class="key" x="0"   y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="17"  y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="34"  y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="51"  y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="68"  y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="85"  y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="102" y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="119" y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="136" y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="153" y="0"  width="14" height="12" rx="2"/>
+              <rect class="key" x="3"   y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="20"  y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="37"  y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="54"  y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="71"  y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="88"  y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="105" y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="122" y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="139" y="16" width="14" height="12" rx="2"/>
+              <rect class="key" x="0"   y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="17"  y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="34"  y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="51"  y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="68"  y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="85"  y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="102" y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="119" y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="136" y="32" width="14" height="12" rx="2"/>
+              <rect class="key" x="153" y="32" width="14" height="12" rx="2"/>
+              <rect class="key key-wide" x="20"  y="48" width="120" height="12" rx="2"/>
+            </g>
+
+            <circle class="trackball" cx="100" cy="172" r="4"/>
+
+            <g transform="translate(0, 90)">
+              <line x1="0" y1="0" x2="-15" y2="0" class="antenna-stub"/>
+              <circle cx="-15" cy="0" r="2.5" class="antenna-tip"/>
+            </g>
+
+            <text class="device-label" x="100" y="208" text-anchor="middle">T-DECK</text>
+          </g>
+        </svg>
+        </div>
+
+        <ol class="stage-labels">
+          <li><span class="stage-num">1</span><strong>Record</strong><span class="stage-body">Sender captures, encodes, and slices the audio</span></li>
+          <li><span class="stage-num">2</span><strong>Transmit</strong><span class="stage-body">Chunks travel hop by hop across the mesh</span></li>
+          <li><span class="stage-num">3</span><strong>Deliver and wait</strong><span class="stage-body">Recipient is notified. The clip sits until they tap play</span></li>
+          <li><span class="stage-num">4</span><strong>Play</strong><span class="stage-body">When the recipient taps, the message is reassembled and heard</span></li>
+        </ol>
+      </div>
+
       <p class="lead">
-        Voicetastic is an open-source push-to-talk voice client for the
-        Meshtastic mesh — no cell network, no servers, no subscription.
+        Voicetastic is open-source <strong>asynchronous voice messaging</strong>
+        for the Meshtastic mesh. Record a clip, hit send, the mesh delivers
+        it. No cell network, no servers, no subscription.
       </p>
       <div class="cta">
         <a href="/flash" class="button primary">Flash your device</a>
-        <a
-          href="https://git.cha-sam.re/voicetastic/voicetastic-desktop/-/wikis/Home"
-          class="button"
-          target="_blank"
-          rel="noopener"
-        >
-          Read the docs
-        </a>
+        <a href="/docs" class="button">Read the docs</a>
         <a href="https://git.cha-sam.re/voicetastic" class="button" target="_blank" rel="noopener">
           View source
         </a>
@@ -106,8 +317,9 @@ const hardware = [
 </Layout>
 
 <style>
+  /* Hero: title, animation, then text. Vertical stack, centered. */
   .hero {
-    padding: 6rem 1.25rem 4rem;
+    padding: 2.5rem 1.25rem 3.5rem;
     text-align: center;
     background: radial-gradient(
         ellipse at top,
@@ -117,25 +329,27 @@ const hardware = [
       var(--bg);
   }
   .hero h1 {
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-size: clamp(2.1rem, 4.6vw, 3.4rem);
     letter-spacing: -0.02em;
-    margin-bottom: 1rem;
+    margin: 0 0 1.5rem;
+    line-height: 1.05;
   }
   .lead {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--text-muted);
-    max-width: 38rem;
-    margin: 0 auto 2rem;
+    max-width: 40rem;
+    margin: 1.75rem auto 1.5rem;
   }
   .cta {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.6rem;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
+    margin: 0 0 0.85rem;
   }
   .hero-note {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+    margin: 0;
   }
 
   .features h2,
@@ -143,6 +357,463 @@ const hardware = [
     font-size: 1.8rem;
     margin-bottom: 2rem;
   }
+
+  /* Async badge above the title */
+  .async-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.85rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 auto 1rem;
+    width: max-content;
+    max-width: 100%;
+  }
+  .async-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 var(--accent-glow);
+    animation: async-dot 2s ease-out infinite;
+  }
+  @keyframes async-dot {
+    0%   { box-shadow: 0 0 0 0   var(--accent-glow); }
+    70%  { box-shadow: 0 0 0 8px transparent;        }
+    100% { box-shadow: 0 0 0 0   transparent;        }
+  }
+
+  /* Demo grid: animation left, vertical stage list right */
+  .demo-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(200px, 1fr);
+    gap: 1.5rem;
+    align-items: stretch;
+    margin: 0 auto 2rem;
+    text-align: left;
+  }
+  @media (max-width: 900px) {
+    .demo-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  .anim-frame {
+    background:
+      radial-gradient(ellipse at center, rgba(255, 223, 213, 0.06), transparent 70%),
+      var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.85rem;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .protocol-anim {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Phase narrative animation. 14 s cycle.
+       0 –  3.0 s (  0 – 21.4%)  Phase 1  RECORD
+       3 –  7.0 s ( 21.4 – 50%)  Phase 2  TRANSMIT
+       7 –  9.5 s (   50 – 67.9%) Phase 3  DELIVERED · WAITING
+     9.5 – 13.5 s (67.9 – 96.4%) Phase 4  PLAY
+   13.5 –  14 s (96.4 – 100%)   Reset                                     */
+
+  /* Phone */
+  .phone-body {
+    fill: var(--bg-card-high);
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+  .phone-screen { fill: var(--bg); }
+  .phone-notch  { fill: var(--bg); }
+  .phone-home   { fill: var(--text-muted); opacity: 0.4; }
+
+  .mic-button {
+    fill: var(--accent);
+    filter: url(#anim-glow);
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: mic-pulse 1.6s ease-in-out infinite;
+  }
+  .mic-icon {
+    fill: var(--accent-on);
+    stroke: var(--accent-on);
+  }
+  @keyframes mic-pulse {
+    0%, 100% { transform: scale(1);    }
+    50%      { transform: scale(1.07); }
+  }
+
+  /* T-Deck */
+  .tdeck-body {
+    fill: var(--bg-card-high);
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+  .tdeck-screen { fill: var(--bg); }
+  .key {
+    fill: var(--bg-elevated);
+    stroke: var(--border);
+    stroke-width: 0.6;
+  }
+  .key-wide { fill: var(--bg-elevated); }
+
+  .trackball {
+    fill: var(--accent);
+    opacity: 0.85;
+    animation: trackball-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes trackball-pulse {
+    0%, 100% { opacity: 0.5; }
+    50%      { opacity: 1;   }
+  }
+
+  .antenna-stub { stroke: var(--border-strong); stroke-width: 2; }
+  .antenna-tip  { fill: var(--accent); }
+
+  .plus-badge       { fill: var(--accent); }
+  .plus-badge-text  {
+    fill: var(--accent-on);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .device-label {
+    fill: var(--text-muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+  }
+  .anim-label {
+    fill: var(--text-muted);
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: 0.18em;
+  }
+  .anim-mini {
+    fill: var(--text-muted);
+    font-size: 11px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: 0.12em;
+  }
+
+  /* --- Phase narration text (top of SVG) --- */
+  .phase-label {
+    fill: var(--text);
+    font-size: 18px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    opacity: 0;
+  }
+  .phase-rec   { animation: ph-rec   14s linear infinite; }
+  .phase-trans { animation: ph-trans 14s linear infinite; }
+  .phase-wait  { animation: ph-wait  14s linear infinite; fill: var(--accent); }
+  .phase-play  { animation: ph-play  14s linear infinite; fill: var(--accent); }
+
+  @keyframes ph-rec   { 0%,18%   {opacity:1;} 21%,100% {opacity:0;} }
+  @keyframes ph-trans { 0%,21%   {opacity:0;} 24%,47%  {opacity:1;} 50%,100% {opacity:0;} }
+  @keyframes ph-wait  { 0%,50%   {opacity:0;} 53%,65%  {opacity:1;} 68%,100% {opacity:0;} }
+  @keyframes ph-play  { 0%,68%   {opacity:0;} 71%,93%  {opacity:1;} 96%,100% {opacity:0;} }
+
+  /* --- Phase progress bar --- */
+  .phase-track { fill: var(--bg-card-high); }
+  .phase-fill  {
+    fill: var(--accent);
+    transform-origin: left center;
+    transform-box: fill-box;
+    animation: progress-fill 14s linear infinite;
+  }
+  @keyframes progress-fill {
+    0%   { transform: scaleX(0); }
+    100% { transform: scaleX(1); }
+  }
+  .phase-cursor {
+    fill: var(--accent);
+    filter: url(#anim-glow);
+    transform-box: fill-box;
+    animation: progress-cursor 14s linear infinite;
+  }
+  @keyframes progress-cursor {
+    0%   { transform: translateX(0);     }
+    100% { transform: translateX(800px); }
+  }
+
+  /* --- Voice path: only shown during transit --- */
+  .voice-path-stroke {
+    opacity: 0;
+    animation: path-show 14s linear infinite, path-drift 6s linear infinite;
+  }
+  @keyframes path-show {
+    0%, 21%   { opacity: 0; }
+    24%, 47%  { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @keyframes path-drift {
+    to { stroke-dashoffset: -100; }
+  }
+
+  /* --- Sender screen states (mutually exclusive) --- */
+  .screen-rec         { opacity: 0; animation: scr-rec   14s linear infinite; }
+  .screen-sent        { opacity: 0; animation: scr-sent  14s linear infinite; }
+  .screen-sender-idle { opacity: 0; animation: scr-sidl  14s linear infinite; }
+  @keyframes scr-rec  { 0%,19%   {opacity:1;} 21%,100% {opacity:0;} }
+  @keyframes scr-sent { 0%,21%   {opacity:0;} 23%,30%  {opacity:1;} 32%,100% {opacity:0;} }
+  @keyframes scr-sidl { 0%,32%   {opacity:0;} 34%,100% {opacity:0.7;} }
+
+  /* --- Receiver screen states --- */
+  .screen-receiver-idle { opacity: 0.7; animation: scr-ridl 14s linear infinite; }
+  .screen-delivered     { opacity: 0;   animation: scr-deli 14s linear infinite; }
+  .screen-play          { opacity: 0;   animation: scr-play 14s linear infinite; }
+  @keyframes scr-ridl { 0%,46%   {opacity:0.7;} 50%,100% {opacity:0;} }
+  @keyframes scr-deli { 0%,48%   {opacity:0;} 51%,65%   {opacity:1;} 68%,100% {opacity:0;} }
+  @keyframes scr-play { 0%,67%   {opacity:0;} 70%,100%  {opacity:1;} }
+
+  /* --- REC dot blink + recording bars --- */
+  .rec-dot {
+    fill: var(--danger);
+    animation: rec-blink 1.2s ease-in-out infinite;
+  }
+  @keyframes rec-blink {
+    0%, 100% { opacity: 1;   }
+    50%      { opacity: 0.2; }
+  }
+
+  .rec-bar {
+    fill: var(--accent);
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: rec-bar-bounce 0.9s ease-in-out infinite;
+  }
+  .rec-bar-1 { animation-delay: 0s;    }
+  .rec-bar-2 { animation-delay: 0.08s; }
+  .rec-bar-3 { animation-delay: 0.18s; }
+  .rec-bar-4 { animation-delay: 0.24s; }
+  .rec-bar-5 { animation-delay: 0.18s; }
+  .rec-bar-6 { animation-delay: 0.10s; }
+  .rec-bar-7 { animation-delay: 0.05s; }
+  @keyframes rec-bar-bounce {
+    0%, 100% { transform: scaleY(0.25); }
+    50%      { transform: scaleY(1);    }
+  }
+
+  /* --- SENT confirmation flourish --- */
+  .confirm-circle {
+    fill: var(--accent);
+    filter: url(#anim-glow);
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: confirm-pop 14s ease-out infinite;
+  }
+  .confirm-check { stroke: var(--accent-on); }
+  @keyframes confirm-pop {
+    0%, 21%   { transform: scale(0);    }
+    24%       { transform: scale(1.15); }
+    28%, 30%  { transform: scale(1);    }
+    32%, 100% { transform: scale(0);    }
+  }
+
+  /* --- DELIVERED notification: envelope, badge, waiting dots --- */
+  .envelope-body { fill: var(--bg-card-high); stroke: var(--accent); stroke-width: 1.2; }
+  .envelope-flap { stroke: var(--accent); }
+  .badge-bubble  { fill: var(--accent); }
+  .badge-num     {
+    fill: var(--accent-on);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .wait-dot   { fill: var(--accent); animation: wait-dot 1.2s ease-in-out infinite; }
+  .wait-dot-2 { animation-delay: 0.2s; }
+  .wait-dot-3 { animation-delay: 0.4s; }
+  @keyframes wait-dot {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 1;    }
+  }
+
+  /* --- PLAY state: glowing play button + bouncing bars --- */
+  .play-button { fill: var(--accent); }
+  .play-icon   { fill: var(--accent-on); }
+
+  .play-bar {
+    fill: var(--accent);
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: play-bar-bounce 0.7s ease-in-out infinite;
+  }
+  .play-bar-1 { animation-delay: 0s;    }
+  .play-bar-2 { animation-delay: 0.06s; }
+  .play-bar-3 { animation-delay: 0.14s; }
+  .play-bar-4 { animation-delay: 0.20s; }
+  .play-bar-5 { animation-delay: 0.26s; }
+  .play-bar-6 { animation-delay: 0.20s; }
+  .play-bar-7 { animation-delay: 0.14s; }
+  .play-bar-8 { animation-delay: 0.06s; }
+  @keyframes play-bar-bounce {
+    0%, 100% { transform: scaleY(0.3); }
+    50%      { transform: scaleY(1);   }
+  }
+
+  /* --- Antenna emit waves: tied to transit phase --- */
+  .antenna-emit       { opacity: 0; }
+  .sender-emit   { animation: emit-sender   14s linear infinite; }
+  .receiver-emit { animation: emit-receiver 14s linear infinite; }
+  @keyframes emit-sender   { 0%,20%   {opacity:0;} 22%,48%  {opacity:1;} 50%,100% {opacity:0;} }
+  @keyframes emit-receiver { 0%,32%   {opacity:0;} 34%,50%  {opacity:1;} 53%,100% {opacity:0;} }
+
+  .wave-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: wave-grow 2.2s ease-out infinite;
+  }
+  .wave-pulse.delay-1 { animation-delay: 0.7s; }
+  .wave-pulse.delay-2 { animation-delay: 1.4s; }
+  .wave-pulse.small   { animation-duration: 1.8s; }
+  .wave-pulse.small.delay-1 { animation-delay: 0.9s; }
+  @keyframes wave-grow {
+    0%   { r: 4;  opacity: 0.8; }
+    100% { r: 40; opacity: 0;   }
+  }
+
+  /* --- Relay nodes: light up in sequence as the packet front passes through --- */
+  .node-dot { fill: var(--accent); }
+  .relay-node { opacity: 0.35; }
+  .relay-1 { animation: relay-active-1 14s ease-in-out infinite; }
+  .relay-2 { animation: relay-active-2 14s ease-in-out infinite; }
+  .relay-3 { animation: relay-active-3 14s ease-in-out infinite; }
+  @keyframes relay-active-1 { 0%,22%   {opacity:0.35;} 26%,30%  {opacity:1;} 34%,100% {opacity:0.35;} }
+  @keyframes relay-active-2 { 0%,28%   {opacity:0.35;} 32%,36%  {opacity:1;} 40%,100% {opacity:0.35;} }
+  @keyframes relay-active-3 { 0%,34%   {opacity:0.35;} 38%,42%  {opacity:1;} 46%,100% {opacity:0.35;} }
+
+  /* --- Voice chunks: each launches at a staggered moment inside the transit phase ---
+     Path: M 190 200 Q 290 110 390 200 T 590 200 T 790 200 L 845 200 */
+  .chunk {
+    fill: var(--accent);
+    offset-path: path("M 190 200 Q 290 110 390 200 T 590 200 T 790 200 L 845 200");
+    offset-distance: 0%;
+    offset-rotate: 0deg;
+    opacity: 0;
+  }
+  .chunk-1 { animation: chunk-1 14s linear infinite; }
+  .chunk-2 { animation: chunk-2 14s linear infinite; }
+  .chunk-3 { animation: chunk-3 14s linear infinite; }
+  .chunk-4 { animation: chunk-4 14s linear infinite; }
+  .chunk-5 { animation: chunk-5 14s linear infinite; }
+  @keyframes chunk-1 {
+    0%, 22%   { opacity: 0; offset-distance: 0%;   }
+    23%       { opacity: 1; offset-distance: 0%;   }
+    35%       { opacity: 1; offset-distance: 100%; }
+    37%, 100% { opacity: 0; offset-distance: 100%; }
+  }
+  @keyframes chunk-2 {
+    0%, 25%   { opacity: 0; offset-distance: 0%;   }
+    26%       { opacity: 1; offset-distance: 0%;   }
+    38%       { opacity: 1; offset-distance: 100%; }
+    40%, 100% { opacity: 0; offset-distance: 100%; }
+  }
+  @keyframes chunk-3 {
+    0%, 28%   { opacity: 0; offset-distance: 0%;   }
+    29%       { opacity: 1; offset-distance: 0%;   }
+    41%       { opacity: 1; offset-distance: 100%; }
+    43%, 100% { opacity: 0; offset-distance: 100%; }
+  }
+  @keyframes chunk-4 {
+    0%, 31%   { opacity: 0; offset-distance: 0%;   }
+    32%       { opacity: 1; offset-distance: 0%;   }
+    44%       { opacity: 1; offset-distance: 100%; }
+    46%, 100% { opacity: 0; offset-distance: 100%; }
+  }
+  @keyframes chunk-5 {
+    0%, 34%   { opacity: 0; offset-distance: 0%;   }
+    35%       { opacity: 1; offset-distance: 0%;   }
+    47%       { opacity: 1; offset-distance: 100%; }
+    49%, 100% { opacity: 0; offset-distance: 100%; }
+  }
+
+  /* Stage labels: vertical list in the right column of the demo grid */
+  .stage-labels {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    align-content: stretch;
+  }
+  .stage-labels li {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 0.6rem;
+    align-items: center;
+  }
+  .stage-num {
+    grid-row: 1 / span 2;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-on);
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    font-size: 0.95rem;
+  }
+  .stage-labels strong {
+    color: var(--text);
+    font-size: 0.98rem;
+  }
+  .stage-body {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    grid-column: 2;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .phase-label,
+    .phase-fill,
+    .phase-cursor,
+    .voice-path-stroke,
+    .screen-rec, .screen-sent, .screen-sender-idle,
+    .screen-receiver-idle, .screen-delivered, .screen-play,
+    .rec-dot, .rec-bar,
+    .mic-button,
+    .confirm-circle,
+    .wait-dot,
+    .play-bar,
+    .antenna-emit,
+    .wave-pulse,
+    .relay-1, .relay-2, .relay-3,
+    .chunk,
+    .trackball {
+      animation: none;
+    }
+    .screen-rec, .screen-delivered { opacity: 1; }
+    .voice-path-stroke { opacity: 0.4; }
+    .chunk { opacity: 0; }
+  }
+
+  /* ---------- end protocol animation ---------- */
+
 
   .feature-grid {
     display: grid;

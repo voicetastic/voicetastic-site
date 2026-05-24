@@ -1,0 +1,276 @@
+---
+import DocLayout from '../../layouts/DocLayout.astro';
+---
+
+<DocLayout
+  title="Voice messages"
+  description="Picking a codec, choosing a LoRa preset, and knowing what to expect from a voice message on a lossy mesh."
+  section="voice-messages"
+>
+  <p class="pill accent">Documentation</p>
+  <h1>Voice messages</h1>
+  <p class="lead">
+    Voicetastic carries short, push-to-talk recordings (a few seconds long).
+    The right codec and the right LoRa preset together decide how big each
+    message is, how long it takes to send, and how well it survives a lossy
+    mesh. Here is how to choose.
+  </p>
+
+  <div class="callout warn">
+    <span class="callout-icon">!</span>
+    <p class="callout-body">
+      <strong>Not real-time.</strong> Voice messages are store and forward. 
+      On a slow LoRa preset a 10 second clip can take most of a minute to 
+      fully arrive. Expect a chat-style "tap to play" experience, not a 
+      continuous voice call.
+    </p>
+  </div>
+
+  <h2>Pick a codec</h2>
+  <p>
+    A codec is the algorithm that compresses your voice. Voicetastic ships
+    three of them; pick based on what you care about most.
+  </p>
+
+  <div class="doc-table-wrap">
+    <table class="doc-table">
+      <thead>
+        <tr>
+          <th>Codec</th>
+          <th>Rate</th>
+          <th>Bitrate</th>
+          <th>Best for</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Codec2</strong> <span class="pill accent">default</span></td>
+          <td>8 kHz</td>
+          <td>1.2 to 3.2 kbps</td>
+          <td>The default. Tiny files; comfortable even on the slowest LoRa presets.</td>
+        </tr>
+        <tr>
+          <td><strong>AMR-NB</strong></td>
+          <td>8 kHz</td>
+          <td>4.75 to 12.20 kbps</td>
+          <td>Wire-compatible with the Voicetastic Android app. Eight selectable bitrates.</td>
+        </tr>
+        <tr>
+          <td><strong>Opus</strong></td>
+          <td>8 kHz narrowband (default), up to 16 kHz wideband</td>
+          <td>6 to 16 kbps</td>
+          <td>Best fidelity. Narrowband at modest bitrates by default; switch to wideband only on fast LoRa presets.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Inbound messages are always decoded with the codec written into their
+    header, so your codec choice only affects what <em>you</em> send. The
+    other side can be on a completely different codec.
+  </p>
+
+  <h3>How small is small?</h3>
+
+  <figure class="doc-figure">
+    <svg viewBox="0 0 720 150" role="img" aria-label="Size of a 30 second clip across codecs">
+      <g>
+        <text class="svg-text-muted" x="20" y="22">Size of a 30 second clip:</text>
+
+        <!-- Codec2 default -->
+        <text class="svg-text" x="20" y="50">Codec2 at 1.2 kbps (default)</text>
+        <rect class="svg-box-accent" x="240" y="36" width="14" height="18" rx="3"/>
+        <text class="svg-text-muted" x="260" y="50">~4.5 kB</text>
+
+        <!-- AMR-NB low -->
+        <text class="svg-text" x="20" y="80">AMR-NB at 4.75 kbps</text>
+        <rect class="svg-box-accent" x="240" y="66" width="50" height="18" rx="3"/>
+        <text class="svg-text-muted" x="296" y="80">~18 kB</text>
+
+        <!-- AMR-NB mid -->
+        <text class="svg-text" x="20" y="110">AMR-NB at 7.95 kbps</text>
+        <rect class="svg-box-accent" x="240" y="96" width="84" height="18" rx="3"/>
+        <text class="svg-text-muted" x="330" y="110">~30 kB</text>
+
+        <!-- Opus narrowband -->
+        <text class="svg-text" x="20" y="140">Opus at 16 kbps</text>
+        <rect class="svg-box-accent" x="240" y="126" width="168" height="18" rx="3"/>
+        <text class="svg-text-muted" x="414" y="140">~60 kB</text>
+      </g>
+    </svg>
+    <figcaption>Bytes on the wire for a 30 second clip, across the three codecs.</figcaption>
+  </figure>
+
+  <h2>Pick a LoRa preset</h2>
+  <p>
+    The Meshtastic LoRa preset trades range against speed. Voicetastic
+    automatically adapts its pacing and chunk size to whatever preset your
+    radio is on, so it is enough to know the general shape:
+  </p>
+
+  <div class="doc-table-wrap">
+    <table class="doc-table">
+      <thead>
+        <tr>
+          <th>Preset family</th>
+          <th>Approx. range (line of sight)</th>
+          <th>Approx. throughput</th>
+          <th>Voicetastic feels like</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Short Turbo / Short Fast</td>
+          <td>under 1 km</td>
+          <td>Fast</td>
+          <td>Snappy. Wideband Opus is realistic here.</td>
+        </tr>
+        <tr>
+          <td>Short Slow / Medium Fast</td>
+          <td>1 to 5 km</td>
+          <td>Mid</td>
+          <td>Comfortable. Codec2 default works well; AMR-NB if you want more headroom.</td>
+        </tr>
+        <tr>
+          <td>Medium Slow / Long Fast</td>
+          <td>5 to 15 km</td>
+          <td>Slow</td>
+          <td>10 second clips take 20 to 30 s to arrive.</td>
+        </tr>
+        <tr>
+          <td>Long Slow / Very Long Slow</td>
+          <td>tens of km</td>
+          <td>Very slow</td>
+          <td>Stick with Codec2 at its lowest mode. Patience required.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">i</span>
+    <p class="callout-body">
+      <strong>Rule of thumb:</strong> if your text messages already feel slow,
+      lower the voice bitrate. If text is snappy, you can probably go higher.
+    </p>
+  </div>
+
+  <h2>How loss recovery works in practice</h2>
+  <p>
+    Voicetastic mixes two techniques so that lost chunks rarely turn into
+    a lost message. Both are automatic; you only ever see the result.
+  </p>
+
+  <figure class="doc-figure">
+    <svg viewBox="0 0 720 200" role="img" aria-label="Loss recovery: FEC versus NACK">
+      <g>
+        <!-- FEC track -->
+        <text class="svg-text" x="20" y="30" font-weight="600">Small loss: FEC fixes it silently</text>
+        <g transform="translate(20, 50)">
+          <rect class="svg-box-accent" x="0"   y="0" width="40" height="22" rx="4"/>
+          <text class="svg-text-on-accent" x="20" y="16" text-anchor="middle">D0</text>
+          <rect class="svg-box-accent" x="50"  y="0" width="40" height="22" rx="4" opacity="0.25"/>
+          <text class="svg-text-on-accent" x="70" y="16" text-anchor="middle" opacity="0.4">lost</text>
+          <rect class="svg-box-accent" x="100" y="0" width="40" height="22" rx="4"/>
+          <text class="svg-text-on-accent" x="120" y="16" text-anchor="middle">D2</text>
+          <rect class="svg-box-accent" x="150" y="0" width="40" height="22" rx="4"/>
+          <text class="svg-text-on-accent" x="170" y="16" text-anchor="middle">D3</text>
+          <rect class="svg-box"        x="220" y="0" width="40" height="22" rx="4"/>
+          <text class="svg-text"       x="240" y="16" text-anchor="middle">P0</text>
+        </g>
+        <text class="svg-text-muted" x="300" y="66">D1 rebuilt from P0. Receiver never asks for anything.</text>
+
+        <!-- NACK track -->
+        <text class="svg-text" x="20" y="115" font-weight="600">Bigger loss: receiver asks once for what is missing</text>
+        <g transform="translate(20, 135)">
+          <rect class="svg-box-accent" x="0"   y="0" width="40" height="22" rx="4" opacity="0.25"/>
+          <text class="svg-text-on-accent" x="20" y="16" text-anchor="middle" opacity="0.4">lost</text>
+          <rect class="svg-box-accent" x="50"  y="0" width="40" height="22" rx="4" opacity="0.25"/>
+          <text class="svg-text-on-accent" x="70" y="16" text-anchor="middle" opacity="0.4">lost</text>
+          <rect class="svg-box-accent" x="100" y="0" width="40" height="22" rx="4"/>
+          <text class="svg-text-on-accent" x="120" y="16" text-anchor="middle">D2</text>
+          <rect class="svg-box-accent" x="150" y="0" width="40" height="22" rx="4"/>
+          <text class="svg-text-on-accent" x="170" y="16" text-anchor="middle">D3</text>
+          <rect class="svg-box"        x="220" y="0" width="40" height="22" rx="4" opacity="0.25"/>
+          <text class="svg-text"       x="240" y="16" text-anchor="middle" opacity="0.4">lost</text>
+        </g>
+        <text class="svg-text-muted" x="300" y="151">FEC budget exceeded. Receiver sends NACK [D0, D1]. Sender retransmits.</text>
+      </g>
+    </svg>
+    <figcaption>Two tiers of recovery; the receiver only asks back when FEC alone cannot patch the hole.</figcaption>
+  </figure>
+
+  <h2>What can happen to a message</h2>
+  <div class="doc-cards">
+    <div class="doc-card">
+      <h3>Delivered cleanly</h3>
+      <p>Every chunk arrived, or FEC rebuilt the missing ones. Playback is bit-perfect against the source recording.</p>
+    </div>
+    <div class="doc-card">
+      <h3>Delivered after a NACK</h3>
+      <p>The receiver asked the sender to fill in a few holes. Same final audio, slightly more airtime.</p>
+    </div>
+    <div class="doc-card">
+      <h3>Partial</h3>
+      <p>Too much was lost to recover. The receiver plays what it has and marks the message as partial. Missing chunks become brief silences.</p>
+    </div>
+    <div class="doc-card">
+      <h3>Dropped</h3>
+      <p>If absolutely nothing useful arrived within the timeout, the receiver discards the message and frees its reassembly slot.</p>
+    </div>
+  </div>
+
+  <h2>Tuning options you can actually change</h2>
+  <p>
+    Voicetastic exposes a small number of settings; the rest are derived
+    automatically. Names below are the desktop settings keys (the Android
+    and CLI surfaces share the same ids).
+  </p>
+
+  <div class="doc-table-wrap">
+    <table class="doc-table">
+      <thead>
+        <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>voice.codec</code></td>
+          <td><code>codec2</code></td>
+          <td>Which codec to use for outgoing messages.</td>
+        </tr>
+        <tr>
+          <td><code>voice.amrnb_mode</code></td>
+          <td><code>7</code> (12.20 kbps)</td>
+          <td>AMR-NB bitrate. Lower means smaller and slower to play.</td>
+        </tr>
+        <tr>
+          <td><code>voice.codec2_mode</code></td>
+          <td><code>5</code> (1200 bps)</td>
+          <td>Codec2 bitrate. Tiny files at the lowest mode.</td>
+        </tr>
+        <tr>
+          <td><code>voice.max_duration_secs</code></td>
+          <td><code>30</code></td>
+          <td>Hard cap on a single recording.</td>
+        </tr>
+        <tr>
+          <td><code>voice.reassembly_timeout_secs</code></td>
+          <td><code>1200</code></td>
+          <td>How long to wait for slow chunks before giving up.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    The full reference, including the storage location of <code>config.toml</code>
+    and the CLI syntax to read or write a key, lives on the
+    <a href="https://git.cha-sam.re/voicetastic/voicetastic-desktop/-/wikis/Settings" target="_blank" rel="noopener">Settings wiki page</a>.
+  </p>
+
+  <div class="doc-foot">
+    <a class="doc-foot-prev" href="/docs/how-it-works">How it works</a>
+    <a class="doc-foot-next" href="/docs/glossary">Glossary</a>
+  </div>
+</DocLayout>

@@ -1,0 +1,165 @@
+---
+import DocLayout from '../../layouts/DocLayout.astro';
+
+const cards = [
+  {
+    href: '/docs/meshtastic',
+    title: 'Meshtastic primer',
+    body: 'The mesh network Voicetastic rides on. Hardware, range, why it matters.',
+  },
+  {
+    href: '/docs/how-it-works',
+    title: 'How it works',
+    body: 'From microphone to mesh to your friend. Architecture, layers, packet flow.',
+  },
+  {
+    href: '/docs/voice-messages',
+    title: 'Voice messages',
+    body: 'Codecs, range vs. quality, FEC, what to expect on a lossy mesh.',
+  },
+  {
+    href: '/docs/glossary',
+    title: 'Glossary',
+    body: 'Short, plain-English definitions for every term you will run into.',
+  },
+];
+
+const features = [
+  {
+    title: 'Voice over LoRa',
+    body: 'Hold the mic, talk, release. Audio is compressed, sliced into mesh-sized chunks and reassembled on the other end.',
+  },
+  {
+    title: 'Text chat',
+    body: 'Standard Meshtastic text on the channel or DM of your choice, exactly as you would expect.',
+  },
+  {
+    title: 'Full radio config',
+    body: 'LoRa, channels, position, power, display, Bluetooth, owner. Every section editable from the app.',
+  },
+  {
+    title: 'No cloud',
+    body: 'No accounts, no telemetry, no server in the middle. Your radio is the network.',
+  },
+];
+---
+
+<DocLayout
+  title="Documentation"
+  description="User documentation for Voicetastic: push-to-talk voice over Meshtastic."
+  section="overview"
+>
+  <p class="pill accent">Documentation</p>
+  <h1>Voicetastic, explained</h1>
+  <p class="lead">
+    Voicetastic is push-to-talk voice messaging, and a full radio
+    configuration UI, for the <a href="https://meshtastic.org/" target="_blank" rel="noopener">Meshtastic</a> LoRa mesh.
+    No internet, no cellular, no central server.
+  </p>
+
+  <figure class="doc-figure">
+    <svg viewBox="0 0 720 200" role="img" aria-label="Voicetastic stack: app talks to radio, radio talks to mesh">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+
+      <!-- Phone -->
+      <g transform="translate(40, 50)">
+        <rect class="svg-box" x="0" y="0" width="120" height="100" rx="12"/>
+        <text class="svg-text" x="60" y="32" text-anchor="middle" font-weight="600">Voicetastic</text>
+        <text class="svg-text-muted" x="60" y="50" text-anchor="middle">Android / Desktop</text>
+        <circle class="node-pulse" cx="60" cy="78" r="6"/>
+      </g>
+
+      <!-- BLE / serial link -->
+      <g color="var(--accent)">
+        <line class="svg-line-accent" x1="170" y1="100" x2="290" y2="100" marker-end="url(#arr)"/>
+        <text class="svg-text-muted" x="230" y="92" text-anchor="middle">BLE  /  USB serial</text>
+        <circle class="packet"          cx="170" cy="100" r="3" style="--packet-distance: 110px"/>
+        <circle class="packet delay-1"  cx="170" cy="100" r="3" style="--packet-distance: 110px"/>
+        <circle class="packet delay-2"  cx="170" cy="100" r="3" style="--packet-distance: 110px"/>
+      </g>
+
+      <!-- Radio -->
+      <g transform="translate(300, 50)">
+        <rect class="svg-box" x="0" y="0" width="120" height="100" rx="12"/>
+        <text class="svg-text" x="60" y="32" text-anchor="middle" font-weight="600">Meshtastic node</text>
+        <text class="svg-text-muted" x="60" y="50" text-anchor="middle">LoRa radio</text>
+        <g transform="translate(60, 80)">
+          <circle class="node-pulse" cx="0" cy="0" r="6"/>
+          <circle class="wave"          cx="0" cy="0" r="8"/>
+          <circle class="wave delay-1"  cx="0" cy="0" r="8"/>
+          <circle class="wave delay-2"  cx="0" cy="0" r="8"/>
+        </g>
+      </g>
+
+      <!-- LoRa link -->
+      <g color="var(--accent)">
+        <line class="svg-line-accent" x1="430" y1="100" x2="550" y2="100" marker-end="url(#arr)"/>
+        <text class="svg-text-muted" x="490" y="92" text-anchor="middle">LoRa</text>
+        <circle class="packet delay-2" cx="430" cy="100" r="3" style="--packet-distance: 110px"/>
+        <circle class="packet delay-3" cx="430" cy="100" r="3" style="--packet-distance: 110px"/>
+        <circle class="packet delay-4" cx="430" cy="100" r="3" style="--packet-distance: 110px"/>
+      </g>
+
+      <!-- Mesh -->
+      <g transform="translate(560, 50)">
+        <rect class="svg-box" x="0" y="0" width="120" height="100" rx="12"/>
+        <text class="svg-text" x="60" y="32" text-anchor="middle" font-weight="600">The mesh</text>
+        <text class="svg-text-muted" x="60" y="50" text-anchor="middle">Other nodes</text>
+        <g transform="translate(30, 78)"><circle class="node-pulse" r="5"/></g>
+        <g transform="translate(60, 78)"><circle class="node-pulse" style="animation-delay: 0.6s" r="5"/></g>
+        <g transform="translate(90, 78)"><circle class="node-pulse" style="animation-delay: 1.2s" r="5"/></g>
+      </g>
+    </svg>
+    <figcaption>The app talks to your radio over BLE or USB; the radio talks to the mesh over LoRa.</figcaption>
+  </figure>
+
+  <h2>What you can do</h2>
+  <div class="doc-cards">
+    {features.map((f) => (
+      <div class="doc-card">
+        <h3>{f.title}</h3>
+        <p>{f.body}</p>
+      </div>
+    ))}
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">!</span>
+    <p class="callout-body">
+      <strong>Voice messaging is experimental.</strong> The end-to-end flow is
+      implemented per spec (protocol v3), but it has not yet been field-tested
+      across a wide range of radios. Text and radio configuration are the
+      supported paths today.
+    </p>
+  </div>
+
+  <h2>Start here</h2>
+  <div class="doc-cards">
+    {cards.map((c) => (
+      <a class="doc-card" href={c.href}>
+        <h3>{c.title}</h3>
+        <p>{c.body}</p>
+      </a>
+    ))}
+  </div>
+
+  <h2>For protocol implementers</h2>
+  <p>
+    These pages are written for end users. If you are implementing the wire
+    protocol or writing a client from scratch, the
+    <a href="https://git.cha-sam.re/voicetastic/voicetastic-desktop/-/wikis/Home" target="_blank" rel="noopener">
+      protocol wiki
+    </a>
+    is the normative source: every byte, every flag, every reserved bit.
+  </p>
+
+  <div class="doc-foot">
+    <span></span>
+    <a class="doc-foot-next" href="/docs/meshtastic">Meshtastic primer</a>
+  </div>
+</DocLayout>
