@@ -1,0 +1,132 @@
+---
+import DocLayout from '../../layouts/DocLayout.astro';
+
+const groups = [
+  {
+    title: 'The basics',
+    items: [
+      { term: 'Mesh', body: 'A network where every device can relay messages for the others. No central tower.' },
+      { term: 'Node', body: 'A single Meshtastic radio. Your radio is a node; every other one within range is too.' },
+      { term: 'LoRa', body: 'Long Range. The radio technology Meshtastic uses; trades data rate for distance.' },
+      { term: 'Channel', body: 'A named, encrypted space on the mesh. Everyone with the channel key sees its traffic.' },
+      { term: 'Broadcast', body: 'A message addressed to everyone on a channel rather than one specific node.' },
+      { term: 'DM', body: 'Direct Message. A message addressed to one specific node.' },
+    ],
+  },
+  {
+    title: 'Codec terms',
+    items: [
+      { term: 'Codec', body: 'The algorithm that compresses your voice into a small stream of bytes.' },
+      { term: 'Codec2', body: 'A very low bitrate codec (1.2 to 3.2 kbps). The default in Voicetastic; tuned for the slowest LoRa presets.' },
+      { term: 'AMR-NB', body: 'Adaptive Multi-Rate Narrowband. Eight bitrates between 4.75 and 12.20 kbps. Wire-compatible with the Voicetastic Android app.' },
+      { term: 'Opus', body: 'A higher-fidelity codec. Narrowband (8 kHz) by default when selected; wideband (up to 16 kHz) is reserved for fast LoRa presets.' },
+      { term: 'Bitrate', body: 'How many bits per second the codec produces. Lower bitrate, smaller file, lower fidelity.' },
+    ],
+  },
+  {
+    title: 'Protocol terms',
+    items: [
+      { term: 'Chunk', body: 'One slice of a voice message, small enough to fit in a single Meshtastic packet.' },
+      { term: 'FEC', body: 'Forward Error Correction. Extra parity chunks that let the receiver rebuild missing pieces without asking.' },
+      { term: 'Parity', body: 'A redundancy chunk. Carries no audio on its own but lets the receiver patch holes.' },
+      { term: 'NACK', body: 'Negative ACK. The receiver says "I am still missing these chunks". The sender resends only those.' },
+      { term: 'PRIVATE_APP', body: 'The Meshtastic application port (256) Voicetastic uses for voice frames.' },
+      { term: 'Stream sequence', body: 'A counter that lets the receiver tell overlapping recordings apart.' },
+    ],
+  },
+  {
+    title: 'Behaviour terms',
+    items: [
+      { term: 'Pacing', body: 'The deliberate gap Voicetastic leaves between outbound chunks to avoid flooding the radio.' },
+      { term: 'Reassembly timeout', body: 'How long the receiver waits for slow chunks before giving up on a message.' },
+      { term: 'Partial', body: 'A message that finished with missing chunks. Audio plays with brief silences where data was lost.' },
+      { term: 'Modem preset', body: 'A Meshtastic setting that picks how fast (and how far) the LoRa radio talks. Voicetastic adapts pacing to it.' },
+    ],
+  },
+];
+---
+
+<DocLayout
+  title="Glossary"
+  description="Short, plain-English definitions for every term you will encounter in Voicetastic."
+  section="glossary"
+>
+  <p class="pill accent">Documentation</p>
+  <h1>Glossary</h1>
+  <p class="lead">
+    Plain-English definitions for every term you will encounter, grouped by
+    where they show up. Bookmark this page; it is the fastest way to
+    decode jargon from the rest of the docs.
+  </p>
+
+  {groups.map((group) => (
+    <section class="gloss-group">
+      <h2>{group.title}</h2>
+      <dl class="gloss-list">
+        {group.items.map((item) => (
+          <div class="gloss-row">
+            <dt>{item.term}</dt>
+            <dd>{item.body}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  ))}
+
+  <h2>Still confused?</h2>
+  <p>
+    The protocol wiki has a much longer
+    <a href="https://git.cha-sam.re/voicetastic/voicetastic-desktop/-/wikis/Glossary" target="_blank" rel="noopener">technical glossary</a>
+    covering every constant, every header field, and every error variant.
+  </p>
+
+  <div class="doc-foot">
+    <a class="doc-foot-prev" href="/docs/voice-messages">Voice messages</a>
+    <span></span>
+  </div>
+</DocLayout>
+
+<style>
+  .gloss-group {
+    margin-bottom: 1.25rem;
+  }
+  .gloss-list {
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    overflow: hidden;
+  }
+  .gloss-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .gloss-row:last-child {
+    border-bottom: 0;
+  }
+  .gloss-row:hover {
+    background: var(--bg-card-high);
+  }
+  .gloss-row dt {
+    margin: 0;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.98rem;
+  }
+  .gloss-row dd {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 600px) {
+    .gloss-row {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+  }
+</style>

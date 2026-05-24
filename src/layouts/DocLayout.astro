@@ -1,0 +1,458 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  section: 'overview' | 'meshtastic' | 'how-it-works' | 'voice-messages' | 'glossary';
+}
+
+const { title, description, section } = Astro.props;
+
+const nav = [
+  { id: 'overview',       href: '/docs',                  label: 'Overview' },
+  { id: 'meshtastic',     href: '/docs/meshtastic',       label: 'Meshtastic primer' },
+  { id: 'how-it-works',   href: '/docs/how-it-works',     label: 'How it works' },
+  { id: 'voice-messages', href: '/docs/voice-messages',   label: 'Voice messages' },
+  { id: 'glossary',       href: '/docs/glossary',         label: 'Glossary' },
+];
+---
+
+<Layout title={`${title} · Voicetastic docs`} description={description}>
+  <section class="doc-shell">
+    <div class="container doc-container">
+      <aside class="doc-sidebar" aria-label="Documentation sections">
+        <p class="sidebar-eyebrow">Documentation</p>
+        <ul class="sidebar-list">
+          {nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={['sidebar-link', { active: item.id === section }]}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="sidebar-divider"></div>
+
+        <p class="sidebar-eyebrow">Deep dives</p>
+        <ul class="sidebar-list">
+          <li>
+            <a
+              class="sidebar-link external"
+              href="https://git.cha-sam.re/voicetastic/voicetastic-desktop/-/wikis/Home"
+              target="_blank"
+              rel="noopener"
+            >
+              Protocol wiki
+            </a>
+          </li>
+          <li>
+            <a
+              class="sidebar-link external"
+              href="https://meshtastic.org/docs/"
+              target="_blank"
+              rel="noopener"
+            >
+              Meshtastic docs
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <article class="doc-content">
+        <slot />
+      </article>
+    </div>
+  </section>
+</Layout>
+
+<style is:global>
+  /* Shared doc components: animated SVG primitives, pills, callouts, cards. */
+
+  .doc-shell {
+    padding: 2.5rem 1.25rem 5rem;
+  }
+
+  .doc-container {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 800px) {
+    .doc-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .doc-sidebar {
+    position: sticky;
+    top: 5rem;
+    align-self: start;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .doc-sidebar {
+      position: static;
+    }
+  }
+
+  .sidebar-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 0.5rem 0.25rem;
+  }
+
+  .sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.5rem 0;
+  }
+  .sidebar-list li + li {
+    margin-top: 0.15rem;
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .sidebar-link:hover {
+    color: var(--text);
+    background: var(--bg-card-high);
+    text-decoration: none;
+  }
+  .sidebar-link.active {
+    color: var(--accent-on);
+    background: var(--accent);
+    font-weight: 600;
+  }
+  .sidebar-link.active:hover {
+    color: var(--accent-on);
+    background: var(--accent-strong);
+  }
+  .sidebar-link.external::after {
+    content: ' \2197';
+    color: var(--text-muted);
+    font-size: 0.8em;
+  }
+
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1rem 0;
+  }
+
+  .doc-content {
+    min-width: 0;
+  }
+
+  .doc-content h1 {
+    font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .doc-content h2 {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .doc-content h3 {
+    font-size: 1.15rem;
+    margin: 1.75rem 0 0.6rem;
+    color: var(--accent);
+  }
+  .doc-content p {
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .doc-content p.lead {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    margin: 0 0 2rem;
+  }
+  .doc-content ul, .doc-content ol {
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .doc-content code {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    padding: 0.05rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--accent);
+  }
+  .doc-content strong {
+    color: var(--text);
+  }
+
+  /* Tables */
+  .doc-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+  }
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.93rem;
+  }
+  .doc-table th,
+  .doc-table td {
+    text-align: left;
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .doc-table thead th {
+    background: var(--bg-card-high);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .doc-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .doc-table tbody tr:hover td {
+    background: var(--bg-card-high);
+  }
+
+  /* Callouts */
+  .callout {
+    margin: 1.5rem 0;
+    padding: 1rem 1.15rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    display: flex;
+    gap: 0.85rem;
+  }
+  .callout .callout-icon {
+    flex: 0 0 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: var(--bg-card-high);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 0.05rem;
+  }
+  .callout .callout-body {
+    margin: 0;
+    color: var(--text-muted);
+  }
+  .callout .callout-body strong {
+    color: var(--text);
+  }
+  .callout.warn .callout-icon { color: var(--danger); }
+  .callout.tip  .callout-icon { color: var(--tertiary); }
+
+  /* Cards grid */
+  .doc-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 1rem;
+  }
+  .doc-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.15rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  a.doc-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .doc-card h3 {
+    margin: 0;
+    color: var(--accent);
+    font-size: 1.05rem;
+  }
+  .doc-card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+  .doc-card .doc-card-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--accent);
+  }
+
+  /* Pills */
+  .pill {
+    display: inline-block;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    margin-right: 0.35rem;
+  }
+  .pill.accent {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-on);
+    font-weight: 700;
+  }
+
+  /* SVG diagram base */
+  .doc-figure {
+    margin: 1.5rem 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .doc-figure svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .doc-figure figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* Shared SVG styling tokens */
+  .svg-box {
+    fill: var(--bg-card-high);
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+  .svg-box-accent {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+  .svg-box-muted {
+    fill: var(--bg-elevated);
+    stroke: var(--border);
+  }
+  .svg-text {
+    fill: var(--text);
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+  }
+  .svg-text-muted {
+    fill: var(--text-muted);
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+  }
+  .svg-text-on-accent {
+    fill: var(--accent-on);
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .svg-line {
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .svg-line-accent {
+    stroke: var(--accent);
+    stroke-width: 2;
+    fill: none;
+  }
+
+  /* Animated packet flow */
+  @keyframes packet-flow {
+    0%   { transform: translateX(0);   opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateX(var(--packet-distance, 200px)); opacity: 0; }
+  }
+  .packet {
+    fill: var(--accent);
+    animation: packet-flow 3s ease-in-out infinite;
+  }
+  .packet.delay-1 { animation-delay: 0.4s; }
+  .packet.delay-2 { animation-delay: 0.8s; }
+  .packet.delay-3 { animation-delay: 1.2s; }
+  .packet.delay-4 { animation-delay: 1.6s; }
+
+  /* Pulsing radio nodes */
+  @keyframes node-pulse {
+    0%, 100% { r: 6; opacity: 1; }
+    50%      { r: 9; opacity: 0.6; }
+  }
+  .node-pulse {
+    fill: var(--accent);
+    animation: node-pulse 2.4s ease-in-out infinite;
+  }
+
+  /* Radio waves */
+  @keyframes wave-expand {
+    0%   { r: 8; opacity: 0.55; stroke-width: 2; }
+    100% { r: 38; opacity: 0;    stroke-width: 0.5; }
+  }
+  .wave {
+    fill: none;
+    stroke: var(--accent);
+    animation: wave-expand 2.4s ease-out infinite;
+  }
+  .wave.delay-1 { animation-delay: 0.8s; }
+  .wave.delay-2 { animation-delay: 1.6s; }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .packet,
+    .node-pulse,
+    .wave {
+      animation: none;
+    }
+  }
+
+  /* Doc breadcrumb / footer */
+  .doc-foot {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.92rem;
+  }
+  .doc-foot a {
+    color: var(--accent);
+  }
+  .doc-foot .doc-foot-next::after {
+    content: ' \2192';
+  }
+  .doc-foot .doc-foot-prev::before {
+    content: '\2190  ';
+  }
+</style>
