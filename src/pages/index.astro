@@ -8,7 +8,7 @@ const features = [
   },
   {
     title: 'Plugs into your radio',
-    body: 'Speaks the Meshtastic protocol over Serial or BLE — no firmware fork, no separate network, no parallel mesh to maintain.',
+    body: 'Speaks the Meshtastic protocol over Serial or BLE. No firmware fork, no separate network, no parallel mesh to maintain.',
   },
   {
     title: 'Open source',
@@ -20,35 +20,35 @@ const features = [
   },
 ];
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 const hardware = [
   {
     name: 'LilyGo T-Deck',
     chip: 'ESP32-S3',
-    status: 'Primary target — browser-flashable',
-    flashable: true,
+    status: 'Primary target, browser-flashable',
+    cta: { label: 'Flash now', href: `${base}/flash`, external: false },
   },
   {
     name: 'Android',
     chip: 'Android 9+',
-    status: 'In development — Rust core via JNI',
-    flashable: false,
+    status: 'In development. Rust core via JNI',
+    cta: { label: 'View source', href: 'https://git.cha-sam.re/voicetastic/android', external: true },
   },
   {
     name: 'Desktop (egui)',
-    chip: 'Linux / macOS / Windows',
+    chip: 'Linux',
     status: 'In development',
-    flashable: false,
+    cta: { label: 'View source', href: 'https://git.cha-sam.re/voicetastic/voicetastic-desktop', external: true },
   },
 ];
-
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <Layout>
   <section class="hero">
     <div class="container">
       <p class="async-badge">
-        <span class="async-dot"></span> Asynchronous · record, send, listen later
+        <span class="async-dot"></span> Asynchronous. Record, send, listen later
       </p>
       <h1>Voice messages. Over Meshtastic.</h1>
 
@@ -73,10 +73,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           </defs>
 
           <g class="phase-display" transform="translate(550, 30)">
-            <text class="phase-label phase-rec"   text-anchor="middle">1 · RECORDING ON SENDER</text>
-            <text class="phase-label phase-trans" text-anchor="middle">2 · TRANSMITTING THROUGH THE MESH</text>
-            <text class="phase-label phase-wait"  text-anchor="middle">3 · DELIVERED · WAITING FOR RECIPIENT</text>
-            <text class="phase-label phase-play"  text-anchor="middle">4 · RECIPIENT TAPPED PLAY</text>
+            <text class="phase-label phase-rec"   text-anchor="middle">1. RECORDING ON SENDER</text>
+            <text class="phase-label phase-trans" text-anchor="middle">2. TRANSMITTING THROUGH THE MESH</text>
+            <text class="phase-label phase-wait"  text-anchor="middle">3. DELIVERED. WAITING FOR RECIPIENT</text>
+            <text class="phase-label phase-play"  text-anchor="middle">4. RECIPIENT TAPPED PLAY</text>
           </g>
 
           <g transform="translate(150, 50)">
@@ -86,7 +86,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           </g>
 
           <path class="voice-path-stroke"
-                d="M 190 200 Q 290 110 390 200 T 590 200 T 790 200 L 845 200"
+                d="M 190 200 Q 290 110 390 200 T 590 200 T 790 200 T 862 200"
                 fill="none"
                 stroke="url(#path-gradient)" stroke-width="2" stroke-dasharray="5 8"/>
 
@@ -166,7 +166,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <rect class="chunk chunk-5" width="12" height="12" rx="2.5" filter="url(#anim-glow)"/>
           </g>
 
-          <g class="antenna-emit receiver-emit" transform="translate(845, 200)">
+          <g class="antenna-emit receiver-emit" transform="translate(862, 200)">
             <circle class="wave-pulse"          r="4" fill="none" stroke="var(--accent)" stroke-width="2"/>
             <circle class="wave-pulse delay-1"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.7"/>
             <circle class="wave-pulse delay-2"  r="4" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
@@ -247,11 +247,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
             <circle class="trackball" cx="100" cy="172" r="4"/>
 
-            <g transform="translate(0, 90)">
-              <line x1="0" y1="0" x2="-15" y2="0" class="antenna-stub"/>
-              <circle cx="-15" cy="0" r="2.5" class="antenna-tip"/>
-            </g>
-
             <text class="device-label" x="100" y="208" text-anchor="middle">T-DECK</text>
           </g>
         </svg>
@@ -308,8 +303,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
               <span class="chip">{h.chip}</span>
             </header>
             <p class="muted">{h.status}</p>
-            {h.flashable && (
-              <a href={`${base}/flash`} class="button primary">Flash now</a>
+            {h.cta && (
+              <a
+                href={h.cta.href}
+                class="button primary"
+                {...(h.cta.external ? { target: '_blank', rel: 'noopener' } : {})}
+              >
+                {h.cta.label}
+              </a>
             )}
           </article>
         ))}
@@ -409,13 +410,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   }
 
   .anim-frame {
-    background:
-      radial-gradient(ellipse at center, rgba(255, 223, 213, 0.06), transparent 70%),
-      var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0.85rem;
-    overflow: hidden;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    overflow: visible;
     display: flex;
     align-items: center;
     min-width: 0;
@@ -427,11 +425,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   }
 
   /* Phase narrative animation. 14 s cycle.
-       0 –  3.0 s (  0 – 21.4%)  Phase 1  RECORD
-       3 –  7.0 s ( 21.4 – 50%)  Phase 2  TRANSMIT
-       7 –  9.5 s (   50 – 67.9%) Phase 3  DELIVERED · WAITING
-     9.5 – 13.5 s (67.9 – 96.4%) Phase 4  PLAY
-   13.5 –  14 s (96.4 – 100%)   Reset                                     */
+       0 to  3.0 s (  0 to 21.4%)  Phase 1  RECORD
+       3 to  7.0 s ( 21.4 to 50%)  Phase 2  TRANSMIT
+       7 to  9.5 s (   50 to 67.9%) Phase 3  DELIVERED, WAITING
+     9.5 to 13.5 s (67.9 to 96.4%) Phase 4  PLAY
+   13.5 to  14 s (96.4 to 100%)   Reset                                     */
 
   /* Phone */
   .phone-body {
@@ -703,10 +701,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   @keyframes relay-active-3 { 0%,34%   {opacity:0.35;} 38%,42%  {opacity:1;} 46%,100% {opacity:0.35;} }
 
   /* --- Voice chunks: each launches at a staggered moment inside the transit phase ---
-     Path: M 190 200 Q 290 110 390 200 T 590 200 T 790 200 L 845 200 */
+     Path: M 190 200 Q 290 110 390 200 T 590 200 T 790 200 T 862 200 */
   .chunk {
     fill: var(--accent);
-    offset-path: path("M 190 200 Q 290 110 390 200 T 590 200 T 790 200 L 845 200");
+    offset-path: path("M 190 200 Q 290 110 390 200 T 590 200 T 790 200 T 862 200");
     offset-distance: 0%;
     offset-rotate: 0deg;
     opacity: 0;

@@ -5,7 +5,7 @@ interface Props {
 }
 
 const {
-  title = 'Voicetastic · async voice messages over Meshtastic',
+  title = 'Voicetastic: async voice messages over Meshtastic',
   description = 'Open-source asynchronous voice messaging for the Meshtastic mesh. Record, send, play. No phone call, no server, no cell network. Flash your T-Deck from the browser.',
 } = Astro.props;
 
@@ -29,7 +29,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <header class="site-header">
       <nav class="nav">
         <a href={base} class="brand">
-          <img src={`${base}/favicon.svg`} alt="" class="brand-mark" width="28" height="28" />
+          <img src={`${base}/favicon.svg`} alt="" class="brand-mark" width="35" height="35" />
           <span>Voicetastic</span>
         </a>
         <ul class="nav-links">
@@ -61,7 +61,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <footer class="site-footer">
       <div class="footer-inner">
         <p>
-          <strong>Voicetastic</strong> — open-source voice over Meshtastic.
+          <strong>Voicetastic</strong>: open-source voice over Meshtastic.
           Licensed under GPL-3.0-or-later.
         </p>
         <p class="muted">
@@ -75,7 +75,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <style is:global>
       /* Colors mirror tokens/design.toml [color.dark_hc], which holds
          the Android app's `Neutral` + HighContrast Material 3 scheme
-         (seed `#FFBDA8`, SPEC_2025). Keep in sync — when the Android
+         (seed `#FFBDA8`, SPEC_2025). Keep in sync: when the Android
          app's Color.kt is regenerated via MaterialKolor Builder,
          refresh both design.toml and these values. */
       :root {
@@ -145,7 +145,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       .nav {
         max-width: var(--max-width);
         margin: 0 auto;
-        padding: 0.9rem 1.25rem;
+        padding: 1.125rem 1.25rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -154,17 +154,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       .brand {
         display: flex;
         align-items: center;
-        gap: 0.55rem;
+        gap: 0.6875rem;
         color: var(--text);
         font-weight: 700;
-        font-size: 1.05rem;
+        font-size: 1.3125rem;
       }
       .brand:hover {
         text-decoration: none;
       }
       .brand-mark {
-        width: 1.75rem;
-        height: 1.75rem;
+        width: 2.1875rem;
+        height: 2.1875rem;
         border-radius: 6px;
         display: block;
       }
