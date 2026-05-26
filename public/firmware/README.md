@@ -1,45 +1,48 @@
 # Firmware flashing
 
-`manifest.json` is the ESP Web Tools manifest that the `/flash` page loads.
-It points **directly at the live GitLab release permalink** for the latest
-firmware — so the site does **not** need rebuilding when new firmware ships.
+There is intentionally **no manifest or binary in this folder.** The `/flash`
+page ([src/pages/flash.astro](../../src/pages/flash.astro)) builds the ESP Web
+Tools manifest **at runtime** so the site never needs rebuilding when new
+firmware ships.
 
 ## How it works
 
-The manifest's part `path` is the always-latest factory image:
+On page load, a script:
 
-```
-https://git.cha-sam.re/voicetastic/firmware/-/releases/permalink/latest/downloads/voicetastic-tdeck-factory.bin
-```
+1. Calls the GitLab API to find the latest released firmware version:
+   ```
+   GET /api/v4/projects/10/packages?package_type=generic
+       &package_name=voicetastic-firmware&order_by=created_at&sort=desc&per_page=1
+   ```
+2. Builds the **direct** package-registry download URL for the factory image:
+   ```
+   /api/v4/projects/10/packages/generic/voicetastic-firmware/<version>/voicetastic-tdeck-factory.bin
+   ```
+3. Assembles an ESP Web Tools manifest in memory (Blob URL) pointing at that
+   URL and hands it to `<esp-web-install-button>`.
 
-- `voicetastic-tdeck-factory.bin` is the **merged** image (bootloader +
-  partitions + app at offset `0x0`), built by the firmware repo's CI
-  `publish-release` job on every `vX.Y.Z` tag. It's the right image for a
-  from-scratch browser flash. (The sibling `voicetastic-tdeck.bin` is the
-  OTA/update image at `0x10000` — do NOT point the manifest at that one.)
-- The browser fetches it cross-origin at flash time. GitLab serves release
-  downloads with `Access-Control-Allow-Origin: *`, and it's a simple GET, so
-  CORS is satisfied without keeping a same-origin copy here.
-- `permalink/latest` always resolves to the newest release, so a new firmware
-  tag is picked up live — no site rebuild, no file to drop in this folder.
+## Why not the release permalink?
 
-## Going live
+`…/releases/permalink/latest/downloads/voicetastic-tdeck-factory.bin` 302-
+redirects through hops (`/releases/permalink/latest` → `/releases/<tag>` →
+package API) that carry **no `Access-Control-Allow-Origin` header**. A cross-
+origin browser fetch through those redirects fails with "NetworkError". The
+**direct** package-registry URL returns `200` with `ACAO: *` and no redirect,
+so CORS is satisfied. Resolving the version via the API keeps it always-latest
+without baking a version into the site.
 
-The permalink 404s until the first firmware release exists. To activate:
+## Which binary
 
-1. Merge the firmware CI MR (`ci/setup-pipeline`).
-2. Cut a firmware tag (`vX.Y.Z`) so the tag pipeline builds + publishes a
-   release with the `voicetastic-tdeck-factory.bin` asset.
-3. The `/flash` button works immediately and stays current for all future
-   releases.
+`voicetastic-tdeck-factory.bin` — the **merged** image (bootloader +
+partitions + app at offset `0x0`), built by the firmware repo's CI on every
+`vX.Y.Z` tag. The sibling `voicetastic-tdeck.bin` is the OTA/update image at
+`0x10000` — not for from-scratch flashing.
 
 ## Caveats
 
-- The release must include the `voicetastic-tdeck-factory.bin` asset (the CI
-  emits it — confirmed in build artifacts).
-- `latest` = newest release by `released_at`.
-- The firmware project must stay public (anonymous browser fetch).
-- `manifest.json` `version` is cosmetic here — ESP Web Tools only uses it for
-  the "already installed?" prompt; the actual binary is always live-latest.
+- The firmware project must stay **public** (anonymous API + download).
+- "latest" = newest package by `created_at`.
+- If the project ID (10) or package name changes, update the constants at the
+  bottom of `flash.astro`.
 
-See https://esphome.github.io/esp-web-tools/ for the full manifest spec.
+See https://esphome.github.io/esp-web-tools/ for the manifest spec.

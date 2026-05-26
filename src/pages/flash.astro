@@ -1,7 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <Layout
@@ -28,7 +26,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         </p>
 
         <div class="install-wrap">
-          <esp-web-install-button manifest={`${base}/firmware/manifest.json`}>
+          <esp-web-install-button id="install-btn" hidden>
             <button slot="activate" class="button primary">Connect &amp; install</button>
             <span slot="unsupported">
               Your browser doesn't support Web Serial. Please use
@@ -39,6 +37,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
               Web Serial requires HTTPS. Please reload this page over HTTPS.
             </span>
           </esp-web-install-button>
+          <p id="fw-status" class="fw-status muted">Loading latest firmware…</p>
         </div>
       </div>
 
@@ -67,6 +66,60 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     type="module"
     src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"
   ></script>
+
+  <script>
+    // Build the ESP Web Tools manifest at runtime so the site never needs
+    // rebuilding when new firmware ships. We resolve the latest released
+    // package version from the GitLab API, then point the manifest at the
+    // DIRECT package URL.
+    //
+    // Why not the /releases/permalink/latest/downloads/... permalink? That
+    // 302-redirects through hops that carry no Access-Control-Allow-Origin,
+    // so a cross-origin browser fetch fails ("NetworkError"). The direct
+    // package-registry URL returns 200 with `ACAO: *` and no redirect, so
+    // CORS is satisfied.
+    const API = 'https://git.cha-sam.re/api/v4';
+    const PROJECT_ID = 10; // voicetastic/firmware
+    const PKG = 'voicetastic-firmware';
+    const FILE = 'voicetastic-tdeck-factory.bin'; // merged image, flash @ 0x0
+
+    async function setupFirmware() {
+      const btn = document.getElementById('install-btn');
+      const status = document.getElementById('fw-status');
+      try {
+        const listUrl =
+          `${API}/projects/${PROJECT_ID}/packages` +
+          `?package_type=generic&package_name=${PKG}` +
+          `&order_by=created_at&sort=desc&per_page=1`;
+        const res = await fetch(listUrl);
+        if (!res.ok) throw new Error(`registry returned ${res.status}`);
+        const pkgs = await res.json();
+        if (!pkgs.length) throw new Error('no firmware releases published yet');
+
+        const version = pkgs[0].version;
+        const binUrl =
+          `${API}/projects/${PROJECT_ID}/packages/generic/${PKG}/${version}/${FILE}`;
+
+        const manifest = {
+          name: 'Voicetastic',
+          version,
+          new_install_prompt_erase: true,
+          builds: [
+            { chipFamily: 'ESP32-S3', parts: [{ path: binUrl, offset: 0 }] },
+          ],
+        };
+        const blobUrl = URL.createObjectURL(
+          new Blob([JSON.stringify(manifest)], { type: 'application/json' }),
+        );
+        btn.setAttribute('manifest', blobUrl);
+        btn.hidden = false;
+        status.textContent = `Latest firmware: ${version}`;
+      } catch (err) {
+        status.textContent = `Couldn't load firmware: ${err.message}`;
+      }
+    }
+    setupFirmware();
+  </script>
 </Layout>
 
 <style>
