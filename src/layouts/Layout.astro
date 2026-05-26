@@ -32,7 +32,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <img src={`${base}/favicon.svg`} alt="" class="brand-mark" width="35" height="35" />
           <span>Voicetastic</span>
         </a>
-        <ul class="nav-links">
+        <button
+          class="nav-toggle"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="nav-links"
+        >
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+        <ul class="nav-links" id="nav-links">
           <li><a href={`${base}/flash`}>Flash</a></li>
           <li><a href={`${base}/docs`}>Docs</a></li>
           <li><a href={`${base}/#hardware`}>Hardware</a></li>
@@ -185,6 +195,67 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         text-decoration: none;
       }
 
+      .nav-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 2.75rem;
+        height: 2.75rem;
+        padding: 0;
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+      }
+      .nav-toggle-bar {
+        display: block;
+        width: 1.25rem;
+        height: 2px;
+        margin: 0 auto;
+        background: var(--text);
+        border-radius: 2px;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+      }
+      .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(2) {
+        opacity: 0;
+      }
+      .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
+      @media (max-width: 640px) {
+        .nav {
+          flex-wrap: wrap;
+        }
+        .nav-toggle {
+          display: flex;
+        }
+        .nav-links {
+          flex-basis: 100%;
+          flex-direction: column;
+          gap: 0;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.25s ease;
+        }
+        .nav-links.open {
+          max-height: 22rem;
+          margin-top: 0.75rem;
+        }
+        .nav-links li {
+          border-top: 1px solid var(--border);
+        }
+        .nav-links a {
+          display: block;
+          padding: 0.85rem 0.25rem;
+          font-size: 1rem;
+        }
+      }
+
       main {
         min-height: calc(100vh - 200px);
       }
@@ -240,5 +311,21 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         margin: 0;
       }
     </style>
+
+    <script>
+      const toggle = document.querySelector('.nav-toggle');
+      const links = document.getElementById('nav-links');
+      toggle?.addEventListener('click', () => {
+        const open = links?.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      // Collapse after navigating via an in-menu link.
+      links?.querySelectorAll('a').forEach((a) =>
+        a.addEventListener('click', () => {
+          links.classList.remove('open');
+          toggle?.setAttribute('aria-expanded', 'false');
+        }),
+      );
+    </script>
   </body>
 </html>
