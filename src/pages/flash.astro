@@ -30,8 +30,8 @@ import Layout from '../layouts/Layout.astro';
             <button slot="activate" class="button primary">Connect &amp; install</button>
             <span slot="unsupported">
               Your browser doesn't support Web Serial. Please use
-              <a href="https://www.google.com/chrome/" target="_blank" rel="noopener">Chrome</a>
-              or Edge on desktop.
+              <a href="https://www.google.com/chrome/" target="_blank" rel="noopener">Chrome</a>,
+              Edge, or Firefox 151+ on desktop.
             </span>
             <span slot="not-allowed">
               Web Serial requires HTTPS. Please reload this page over HTTPS.
@@ -54,8 +54,9 @@ import Layout from '../layouts/Layout.astro';
             and log out / back in.
           </li>
           <li>
-            <strong>Browser not supported?</strong> Web Serial is Chromium-only
-            for now. Firefox and Safari are not supported.
+            <strong>Browser not supported?</strong> Web Serial works in
+            Chromium browsers (Chrome, Edge) and Firefox 151+. Safari is not
+            supported.
           </li>
         </ul>
       </details>
