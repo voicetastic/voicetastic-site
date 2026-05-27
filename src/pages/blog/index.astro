@@ -1,0 +1,142 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+
+const dateFmt = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout
+  title="Blog | Voicetastic"
+  description="Updates, design notes, and protocol deep dives from the Voicetastic project."
+>
+  <section class="blog-index">
+    <div class="container">
+      <p class="pill accent">Blog</p>
+      <h1>Notes from the mesh</h1>
+      <p class="lead">
+        Release updates, design notes, and protocol deep dives from the
+        Voicetastic project.
+      </p>
+
+      {posts.length === 0 ? (
+        <p class="muted">No posts yet. Check back soon.</p>
+      ) : (
+        <ul class="post-list">
+          {posts.map((post) => (
+            <li class="post-item">
+              <a class="post-link" href={`${base}/blog/${post.id}`}>
+                <time datetime={post.data.pubDate.toISOString()} class="post-date">
+                  {dateFmt.format(post.data.pubDate)}
+                </time>
+                <h2>{post.data.title}</h2>
+                <p class="post-desc">{post.data.description}</p>
+                {post.data.tags.length > 0 && (
+                  <div class="post-tags">
+                    {post.data.tags.map((t) => <span class="tag">{t}</span>)}
+                  </div>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .blog-index {
+    padding: 3rem 1.25rem 5rem;
+  }
+  .pill {
+    display: inline-block;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-on);
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+  }
+  h1 {
+    font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5rem;
+  }
+  .lead {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 40rem;
+    margin: 0 0 2.5rem;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+    max-width: 48rem;
+  }
+  .post-link {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.75rem;
+    color: var(--text);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .post-link:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .post-date {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+  .post-link h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    color: var(--accent);
+  }
+  .post-desc {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+  }
+  .tag {
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+  }
+</style>
