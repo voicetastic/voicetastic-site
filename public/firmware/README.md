@@ -9,27 +9,25 @@ firmware ships.
 
 On page load, a script:
 
-1. Calls the GitLab API to find the latest released firmware version:
+1. Calls the GitHub Releases API to find the latest published release:
    ```
-   GET /api/v4/projects/10/packages?package_type=generic
-       &package_name=voicetastic-firmware&order_by=created_at&sort=desc&per_page=1
+   GET https://api.github.com/repos/voicetastic/firmware/releases/latest
    ```
-2. Builds the **direct** package-registry download URL for the factory image:
+2. Finds the asset named `voicetastic-tdeck-factory.bin` and reads its
+   `browser_download_url`:
    ```
-   /api/v4/projects/10/packages/generic/voicetastic-firmware/<version>/voicetastic-tdeck-factory.bin
+   https://github.com/voicetastic/firmware/releases/download/<tag>/voicetastic-tdeck-factory.bin
    ```
 3. Assembles an ESP Web Tools manifest in memory (Blob URL) pointing at that
    URL and hands it to `<esp-web-install-button>`.
 
-## Why not the release permalink?
+## CORS
 
-`…/releases/permalink/latest/downloads/voicetastic-tdeck-factory.bin` 302-
-redirects through hops (`/releases/permalink/latest` → `/releases/<tag>` →
-package API) that carry **no `Access-Control-Allow-Origin` header**. A cross-
-origin browser fetch through those redirects fails with "NetworkError". The
-**direct** package-registry URL returns `200` with `ACAO: *` and no redirect,
-so CORS is satisfied. Resolving the version via the API keeps it always-latest
-without baking a version into the site.
+Both `api.github.com` and the redirect target (`objects.githubusercontent.com`,
+where the binary actually lives) return `Access-Control-Allow-Origin: *`, so
+the API fetch + ESP Web Tools' binary fetch both succeed cross-origin without
+proxying. The single 302 hop the `browser_download_url` makes is transparent
+to the browser.
 
 ## Which binary
 
@@ -40,9 +38,10 @@ partitions + app at offset `0x0`), built by the firmware repo's CI on every
 
 ## Caveats
 
-- The firmware project must stay **public** (anonymous API + download).
-- "latest" = newest package by `created_at`.
-- If the project ID (10) or package name changes, update the constants at the
-  bottom of `flash.astro`.
+- The firmware repo must stay **public** (anonymous API + download).
+- "latest" = the release flagged as latest by GitHub (typically the
+  most recently published non-prerelease).
+- If the repo slug or asset filename changes, update the constants at the
+  top of `flash.astro`.
 
 See https://esphome.github.io/esp-web-tools/ for the manifest spec.

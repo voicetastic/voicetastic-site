@@ -71,35 +71,32 @@ import Layout from '../layouts/Layout.astro';
   <script>
     // Build the ESP Web Tools manifest at runtime so the site never needs
     // rebuilding when new firmware ships. We resolve the latest released
-    // package version from the GitLab API, then point the manifest at the
-    // DIRECT package URL.
+    // tag from the GitHub Releases API, then point the manifest at the
+    // matching asset's `browser_download_url`.
     //
-    // Why not the /releases/permalink/latest/downloads/... permalink? That
-    // 302-redirects through hops that carry no Access-Control-Allow-Origin,
-    // so a cross-origin browser fetch fails ("NetworkError"). The direct
-    // package-registry URL returns 200 with `ACAO: *` and no redirect, so
-    // CORS is satisfied.
-    const API = 'https://git.cha-sam.re/api/v4';
-    const PROJECT_ID = 10; // voicetastic/firmware
-    const PKG = 'voicetastic-firmware';
+    // Both `api.github.com` and the redirect target
+    // (`objects.githubusercontent.com`) carry `Access-Control-Allow-Origin: *`,
+    // so the cross-origin fetch + ESP Web Tools' binary fetch both
+    // succeed without proxying.
+    const REPO = 'voicetastic/firmware';
     const FILE = 'voicetastic-tdeck-factory.bin'; // merged image, flash @ 0x0
 
     async function setupFirmware() {
       const btn = document.getElementById('install-btn');
       const status = document.getElementById('fw-status');
       try {
-        const listUrl =
-          `${API}/projects/${PROJECT_ID}/packages` +
-          `?package_type=generic&package_name=${PKG}` +
-          `&order_by=created_at&sort=desc&per_page=1`;
-        const res = await fetch(listUrl);
-        if (!res.ok) throw new Error(`registry returned ${res.status}`);
-        const pkgs = await res.json();
-        if (!pkgs.length) throw new Error('no firmware releases published yet');
+        const res = await fetch(
+          `https://api.github.com/repos/${REPO}/releases/latest`,
+        );
+        if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
+        const release = await res.json();
+        const asset = (release.assets || []).find((a) => a.name === FILE);
+        if (!asset) {
+          throw new Error(`asset ${FILE} not found in latest release`);
+        }
 
-        const version = pkgs[0].version;
-        const binUrl =
-          `${API}/projects/${PROJECT_ID}/packages/generic/${PKG}/${version}/${FILE}`;
+        const version = release.tag_name || release.name;
+        const binUrl = asset.browser_download_url;
 
         const manifest = {
           name: 'Voicetastic',
