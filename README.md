@@ -1,6 +1,6 @@
 # Voicetastic — site
 
-Marketing + browser-flasher site for the [Voicetastic](https://git.cha-sam.re/voicetastic)
+Marketing + browser-flasher site for the [Voicetastic](https://github.com/voicetastic)
 project. Built with [Astro](https://astro.build/) and
 [ESP Web Tools](https://esphome.github.io/esp-web-tools/).
 
@@ -17,12 +17,17 @@ npm run preview  # serve the built site
 
 ## Deployment
 
-Auto-deploys to GitLab Pages on every push to `main` via `.gitlab-ci.yml`.
+GitHub Actions (`.github/workflows/deploy.yml`) builds and publishes to
+GitHub Pages on every push to `main`. `.gitlab-ci.yml` is kept as a
+parallel deploy path for the GitLab mirror — both pipelines run the
+same `npm install && npm run build` and pick up `dist/`.
 
-The build artifact is copied into `public/` (GitLab Pages requirement) — note
-that this overwrites the source `public/` directory at deploy time. Anything
-that must ship with the site (firmware binaries, favicon, etc.) lives under
-`public/` in source and gets copied into `dist/` during `astro build`.
+The GitLab Pages job additionally copies `dist/` into `public/` because
+that path is hard-coded into GitLab's Pages contract; GitHub Pages
+deploys `dist/` directly via `actions/upload-pages-artifact`. Anything
+that must ship with the site (firmware binaries, favicon, etc.) lives
+under `public/` in source and gets copied into `dist/` during
+`astro build`.
 
 ## Browser flasher
 
