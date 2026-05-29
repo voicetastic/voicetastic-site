@@ -21,12 +21,29 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <div class="callout warn">
     <span class="callout-icon">!</span>
     <p class="callout-body">
-      <strong>Not real-time.</strong> Voice messages are store and forward. 
-      On a slow LoRa preset a 10 second clip can take most of a minute to 
-      fully arrive. Expect a chat-style "tap to play" experience, not a 
+      <strong>Not real-time.</strong> Voice messages are store and forward.
+      On a slow LoRa preset a 10 second clip can take most of a minute to
+      fully arrive. Expect a chat-style "tap to play" experience, not a
       continuous voice call.
     </p>
   </div>
+
+  <figure class="doc-figure">
+    <video
+      src={`${base}/videos/web-desktop-exchange.webm`}
+      controls
+      preload="metadata"
+      playsinline
+      width="1920"
+      height="1032"
+      aria-label="Screencast showing two voice messages exchanged between the browser client and the desktop client."
+    ></video>
+    <figcaption>
+      Two voice messages exchanged between the browser client (left)
+      and the desktop egui client (right) over a Meshtastic link.
+      Screen capture only — no audio track was recorded.
+    </figcaption>
+  </figure>
 
   <h2>Pick a codec</h2>
   <p>
