@@ -18,16 +18,16 @@ npm run preview  # serve the built site
 ## Deployment
 
 GitHub Actions (`.github/workflows/deploy.yml`) builds and publishes to
-GitHub Pages on every push to `main`. `.gitlab-ci.yml` is kept as a
-parallel deploy path for the GitLab mirror — both pipelines run the
-same `npm install && npm run build` and pick up `dist/`.
+GitHub Pages on every push to `main`. If you also keep a GitLab pull
+mirror of this repo, the in-tree `.gitlab-ci.yml` runs the same
+`npm install && npm run build` there so the mirror's project view shows
+green pipelines too — GitHub Pages remains the canonical deploy target.
 
-The GitLab Pages job additionally copies `dist/` into `public/` because
-that path is hard-coded into GitLab's Pages contract; GitHub Pages
-deploys `dist/` directly via `actions/upload-pages-artifact`. Anything
-that must ship with the site (firmware binaries, favicon, etc.) lives
-under `public/` in source and gets copied into `dist/` during
-`astro build`.
+Note on `dist/` placement: GitHub Pages publishes `dist/` directly via
+`actions/upload-pages-artifact`. GitLab Pages contracts on `public/`, so
+its job additionally copies `dist/` → `public/`. Anything that must ship
+with the site (firmware binaries, favicon, etc.) lives under `public/`
+in source and gets copied into `dist/` during `astro build`.
 
 ## Browser flasher
 
