@@ -33,9 +33,9 @@ const hardware = [
     name: 'Android',
     chip: 'Android 9+',
     status: 'In development. Rust core via JNI',
-    // Always-latest signed APK, published by the `publish-release` CI job
-    // on each `vX.Y.Z` tag pipeline. 404s until the first release is cut.
-    cta: { label: 'Download APK', href: 'https://git.cha-sam.re/voicetastic/android/-/releases/permalink/latest/downloads/voicetastic.apk', external: true },
+    // Always-latest signed APK, published by the `release` workflow on
+    // each `vX.Y.Z` tag. 404s until the first release is cut.
+    cta: { label: 'Download APK', href: 'https://github.com/voicetastic/voicetastic-android/releases/latest/download/voicetastic.apk', external: true },
   },
   {
     name: 'Desktop (egui)',
