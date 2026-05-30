@@ -1,6 +1,6 @@
 # Voicetastic — site
 
-Marketing + browser-flasher site for the [Voicetastic](https://github.com/voicetastic)
+Project overview + browser-flasher site for the [Voicetastic](https://github.com/voicetastic)
 project. Built with [Astro](https://astro.build/) and
 [ESP Web Tools](https://esphome.github.io/esp-web-tools/).
 
