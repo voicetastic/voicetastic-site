@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
+    "fetch-firmware": "node scripts/fetch-firmware.mjs",
+    "prebuild": "node scripts/fetch-firmware.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
