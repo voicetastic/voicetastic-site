@@ -69,49 +69,32 @@ import Layout from '../layouts/Layout.astro';
   ></script>
 
   <script>
-    // Build the ESP Web Tools manifest at runtime so the site never needs
-    // rebuilding when new firmware ships. We resolve the latest released
-    // tag from the GitHub Releases API, then point the manifest at the
-    // matching asset's `browser_download_url`.
+    // The firmware binary and ESP Web Tools manifest are bundled into the
+    // site at build time (scripts/fetch-firmware.mjs), so they're served
+    // SAME-ORIGIN from /firmware/. This avoids the CORS failure you get
+    // fetching GitHub release assets directly: they redirect to
+    // `release-assets.githubusercontent.com`, which sends no
+    // `Access-Control-Allow-Origin` header, so the browser blocks ESP Web
+    // Tools' binary fetch ("failed to fetch resource").
     //
-    // Both `api.github.com` and the redirect target
-    // (`objects.githubusercontent.com`) carry `Access-Control-Allow-Origin: *`,
-    // so the cross-origin fetch + ESP Web Tools' binary fetch both
-    // succeed without proxying.
-    const REPO = 'voicetastic/firmware';
-    const FILE = 'voicetastic-tdeck-factory.bin'; // merged image, flash @ 0x0
+    // The manifest is regenerated on every site build; the firmware release
+    // workflow triggers a rebuild so this stays current.
+    const MANIFEST_URL = '/firmware/manifest.json';
 
     async function setupFirmware() {
       const btn = document.getElementById('install-btn');
       const status = document.getElementById('fw-status');
       try {
-        const res = await fetch(
-          `https://api.github.com/repos/${REPO}/releases/latest`,
-        );
-        if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
-        const release = await res.json();
-        const asset = (release.assets || []).find((a) => a.name === FILE);
-        if (!asset) {
-          throw new Error(`asset ${FILE} not found in latest release`);
-        }
+        const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`manifest unavailable (HTTP ${res.status})`);
+        const manifest = await res.json();
 
-        const version = release.tag_name || release.name;
-        const binUrl = asset.browser_download_url;
-
-        const manifest = {
-          name: 'Voicetastic',
-          version,
-          new_install_prompt_erase: true,
-          builds: [
-            { chipFamily: 'ESP32-S3', parts: [{ path: binUrl, offset: 0 }] },
-          ],
-        };
-        const blobUrl = URL.createObjectURL(
-          new Blob([JSON.stringify(manifest)], { type: 'application/json' }),
-        );
-        btn.setAttribute('manifest', blobUrl);
+        // Same-origin manifest URL; ESP Web Tools resolves the relative
+        // `path` in each build against it, so the binary is fetched from
+        // /firmware/ too (no cross-origin request, no CORS).
+        btn.setAttribute('manifest', MANIFEST_URL);
         btn.hidden = false;
-        status.textContent = `Latest firmware: ${version}`;
+        status.textContent = `Latest firmware: ${manifest.version ?? 'unknown'}`;
       } catch (err) {
         status.textContent = `Couldn't load firmware: ${err.message}`;
       }

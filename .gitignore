@@ -1,6 +1,12 @@
 node_modules/
 dist/
 .astro/
+
+# Firmware binaries + manifest are downloaded at build time by
+# scripts/fetch-firmware.mjs; never commit them (large, and they belong to
+# the firmware repo's releases). The folder's README.md stays tracked.
+public/firmware/*.bin
+public/firmware/manifest.json
 .env
 .env.*
 !.env.example

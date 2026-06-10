@@ -15,6 +15,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Rebuild when new firmware ships: the firmware release workflow sends a
+  # `firmware-released` dispatch so scripts/fetch-firmware.mjs picks up the
+  # new release without a manual redeploy.
+  repository_dispatch:
+    types: [firmware-released]
 
 permissions:
   contents: read
@@ -43,6 +48,11 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Lets scripts/fetch-firmware.mjs authenticate to the GitHub API
+          # so the firmware download isn't throttled by the unauthenticated
+          # rate limit on shared runner IPs.
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
